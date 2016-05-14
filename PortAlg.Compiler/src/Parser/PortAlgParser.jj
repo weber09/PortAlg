@@ -1,0 +1,504 @@
+//javacc_options
+PARSER_BEGIN(PortAlgParser)
+
+class PortAlgParser{
+	 public static void main(String args[]) {
+    PortAlgParser parser;
+	int version = 0;
+	int rebuild = 0;
+	int commit = 10;
+    if (args.length == 0) {
+      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from standard input . . .");
+      parser = new PortAlgParser(System.in);
+    } else if (args.length == 1) {
+      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from file " + args[0] + " . . .");
+      try {
+        parser = new PortAlgParser(new java.io.FileInputStream(args[0]));
+      } catch (java.io.FileNotFoundException e) {
+        System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  File " + args[0] + " not found.");
+        return;
+      }
+    } else {
+      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Usage is one of:");
+      System.out.println("         java PortAlgParser < inputfile");
+      System.out.println("OR");
+      System.out.println("         java PortAlgParser inputfile");
+      return;
+    }
+    try {
+      parser.Specification();
+      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Algol file parsed successfully.");
+    } catch (ParseException e) {
+      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
+	  System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END (PortAlgParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|
+  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+/*TOKENS*/
+TOKEN :
+{
+  < ALGORITMO: "algoritmo" >
+| < VAR: "var" >
+| < INICIO: "inicio" >
+| < FIMALGORITMO: "fimalgoritmo" >
+| < INTEIRO: "inteiro">
+| < LOGICO: "logico">
+| <LITERAL: "literal">
+| <VETOR: "vetor">
+| <DE: "de">
+| <VERDADEIRO: "verdadeiro">
+| <FALSO: "falso">
+| <ESCREVA: "escreva">
+| <ESCREVAL: "escreval">
+| <LEIA: "leia">
+| <LEIAL: "leial">
+| <SE: "se">
+| <ENTAO: "entao">
+| <FIMSE: "fimse">
+| <SENAO: "senao">
+| <REPITA: "repita">
+| <ATE: "ate">
+| <ENQUANTO: "enquanto">
+| <FACA: "faca">
+| <FIMENQUANTO: "fimenquanto">
+| <PARA: "para">
+| <FIMPARA: "fimpara">
+| <NULL: "null">
+| <VOID: "void">
+| <CASO: "caso">
+| <PARAR: "parar">
+| <PADRAO: "padrao">
+| <ESCOLHA: "escolha">
+| <RETORNA: "retorna">
+| <DECIMAL: "real">
+| <CONTINUAR: "continuar">
+| <FIMESCOLHA: "fimescolha">
+| <FUNCAO: "funcao">
+| <FIMFUNCAO: "fimfuncao">
+}
+
+/*LITERALS*/
+TOKEN :
+{
+  < INTEGER_LITERAL: ["0"-"9"] (["0"-"9"])*  >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ <DOT> (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | <DOT> (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+/* IDENTIFIERS */
+
+/* SEPARATORS */
+
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < COMMA: "," >
+| < DOT: "." >
+| <DOUBLEDOT: "..">
+}
+
+/* OPERATORS */
+
+TOKEN :
+{
+  < ASSIGN: "<-" >
+| < GT: ">" >
+| < LT: "<" >
+| < EQ: "=" >
+| < NE: "<>" >
+| < LE: "<=" >
+| < GE: ">=" >
+| < SC_OR: "ou" >
+| < SC_AND: "e" >
+| < INCR: "++" >
+| < DECR: "--" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < CSLASH: "\\" >
+| < XOR: "^" >
+| < REM: "%" >
+| < PLUSASSIGN: "+<-" >
+| < MINUSASSIGN: "-<-" >
+| < STARASSIGN: "*<-" >
+| < SLASHASSIGN: "/<-" >
+| < ANDASSIGN: "&<-" >
+| < ORASSIGN: "|<-" >
+| < XORASSIGN: "^<-" >
+| < REMASSIGN: "%<-" >
+}
+
+TOKEN :
+{
+	< IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|  < #LETTER: ["_","a"-"z","A"-"Z"] >
+|  < #DIGIT: ["0"-"9"] >
+}
+
+/*PROGRAM SPECIFICATION*/
+
+ void Specification() :
+{}
+{
+	"algoritmo" (<STRING_LITERAL>)*
+	(Function())*
+	VariableInitializer()
+	"inicio"
+	(Statement())*
+	"fimalgoritmo"
+}
+
+void Function() :
+{}
+{
+	"funcao"
+	["var"]
+	VariableDeclarations()
+	(Statement())*
+	"fimfuncao"
+}
+
+/*PROGRAM SPECIFICATION*/
+
+/*VARIABLES DECLARATION BLOCK*/
+
+void VariableInitializer():
+{}
+{
+	"var" 
+	VariableDeclarations()
+}
+
+void VariableDeclarations() :
+{}
+{
+    (LOOKAHEAD(2)(VariableDeclaratorId() ":" [<VETOR> <LBRACKET> <INTEGER_LITERAL> <DOUBLEDOT> <INTEGER_LITERAL> [<COMMA> <INTEGER_LITERAL> <DOUBLEDOT> <INTEGER_LITERAL> ] <RBRACKET> <DE>] Type()))*
+}
+
+void VariableDeclaratorId() :
+{}
+{
+  NameList()
+}
+
+void NameList() :
+{}
+{
+  Name() ( LOOKAHEAD(2) "," Name() )*
+}
+
+void Name() :
+{}
+{
+   <IDENTIFIER> (<LBRACKET> Expression() <RBRACKET>)*
+}
+
+void Type() :
+{}
+{
+   <LOGICO>
+|
+  <INTEIRO>
+|
+  <DECIMAL>
+|
+  <LITERAL>
+}
+
+/*VARIABLES DECLARATION BLOCK*/
+
+/*STATEMENTS*/
+
+void Statement() :
+{}
+{
+ LOOKAHEAD(2)
+ StatementExpression()
+|
+  SwitchStatement()
+|
+  IfStatement()
+|
+  WhileStatement()
+|
+  DoStatement()
+|
+  ForStatement()
+|
+  BreakStatement()
+|
+  ContinueStatement()
+|
+  WriteStatement()
+|
+  ReadStatement()
+}
+
+void StatementExpression() :
+{}
+{
+  Name()
+  AssignmentOperator()
+  Expression()
+}
+
+void AssignmentOperator() :
+{}
+{
+  "<-" | "*<-" | "/<-" | "%<-" | "+<-" | "-<-" | "&<-" | "^<-" | "|<-"
+}
+
+void Expression() :
+{}
+{
+	ConditionalOrExpression()
+}
+
+void ConditionalOrExpression() :
+{}
+{
+  ConditionalAndExpression() ( "ou" ConditionalAndExpression() )*
+}
+
+void ConditionalAndExpression() :
+{}
+{
+  EqualityExpression() ( "e" EqualityExpression() )*
+}
+
+void EqualityExpression() :
+{}
+{
+  RelationalExpression() ( ( "=" | "<>" ) RelationalExpression() )*
+}
+
+void RelationalExpression() :
+{}
+{
+  AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" ) AdditiveExpression() )*
+}
+
+void AdditiveExpression() :
+{}
+{
+  MultiplicativeExpression() (LOOKAHEAD(2) ( "+" | "-" ) MultiplicativeExpression() )*
+}
+
+void MultiplicativeExpression() :
+{}
+{
+  PowerExpression() ( ( "*" | "/" | "%" | "\\" ) PowerExpression() )*
+}
+
+void PowerExpression() :
+{}
+{
+	UnaryExpression() ["^" PowerExpression()]
+}
+
+void UnaryExpression() :
+{}
+{
+  ( "+" | "-" ) UnaryExpression()
+|
+  PrimaryExpression()
+}
+
+void PrimaryExpression() :
+{}
+{
+	Name()
+|
+	"(" Expression() ")"
+|
+	Literal()
+}
+
+void Literal() :
+{}
+{
+  <INTEGER_LITERAL>
+|
+  <FLOATING_POINT_LITERAL>
+|
+  <CHARACTER_LITERAL>
+|
+  <STRING_LITERAL>
+|
+  BooleanLiteral()
+}
+
+void BooleanLiteral() :
+{}
+{
+  <VERDADEIRO>
+|
+  <FALSO>
+}
+
+void SwitchStatement() :
+{}
+{
+  "escolha" Expression()
+    ( SwitchLabel() ( Statement() )* )*
+   "fimescolha"
+}
+
+void SwitchLabel() :
+{}
+{
+  "caso" Expression() ":"
+|
+  "padrao" ":"
+}
+
+void IfStatement() :
+/*
+ * The disambiguating algorithm of JavaCC automatically binds dangling
+ * else's to the innermost if statement.  The LOOKAHEAD specification
+ * is to tell JavaCC that we know what we are doing.
+ */
+{}
+{
+  "se" Expression() "entao" (Statement())* [ LOOKAHEAD(1) "senao" (Statement())* ] "fimse"
+}
+
+void WhileStatement() :
+{}
+{
+  "enquanto" Expression() "faca" (Statement())* "fimenquanto"
+}
+
+void DoStatement() :
+{}
+{
+  "repita" (Statement())* "ate" Expression()
+}
+
+void ForStatement() :
+{}
+{
+  "para" <IDENTIFIER> "de" Expression() "ate" Expression() "faca" (Statement())* "fimpara"
+}
+
+void BreakStatement() :
+{}
+{
+  "parar"
+}
+
+void ContinueStatement() :
+{}
+{
+  "continuar"
+}
+
+void ReturnStatement() :
+{}
+{
+  "retorna" [LOOKAHEAD(2) Expression() ]
+}
+
+void WriteStatement() :
+{}
+{
+	("escreva" | "escreval") "(" [ (Name() | Literal()) ( "," (Name() | Literal()) )* ] ")"
+}
+
+void ReadStatement() :
+{}
+{
+	("leia" | "leial") "("NameList()")"
+}
+
+//colocar producao para um "do-while"
+
+
+
+/*STATEMENTS*/
