@@ -761,7 +761,7 @@ expr = PostfixExpression();
 
   static final public SPExpression PostfixExpression() throws ParseException {SPExpression expr;
     expr = PrimaryExpression();
-
+expr = Selector(expr);
 {if ("" != null) return expr;}
     throw new Error("Missing return statement in function");
   }
@@ -790,27 +790,31 @@ expr = Literal();
   static final public SPExpression Selector(SPExpression expr) throws ParseException {SPExpression select;
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
   SPExpression indexExpression;
-    jj_consume_token(LBRACKET);
+    try {
+      jj_consume_token(LBRACKET);
 indexExpression = Expression();
     indexExpressions.add(indexExpression);
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case COMMA:{
-        ;
-        break;
+      label_13:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case COMMA:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[22] = jj_gen;
+          break label_13;
         }
-      default:
-        jj_la1[22] = jj_gen;
-        break label_13;
-      }
-      jj_consume_token(COMMA);
+        jj_consume_token(COMMA);
 indexExpression = Expression();
       indexExpressions.add(indexExpression);
-    }
-    jj_consume_token(RBRACKET);
+      }
+      jj_consume_token(RBRACKET);
 select = new SPArrayExpression(line, expr, indexExpressions);
     {if ("" != null) return select;}
+    } catch (Exception e) {
+{if ("" != null) return expr;}
+    }
     throw new Error("Missing return statement in function");
   }
 

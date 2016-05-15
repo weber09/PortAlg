@@ -715,8 +715,9 @@ SPExpression PostfixExpression() :
 }
 {
   expr = PrimaryExpression()
+  
   {
-    //expr = Selector(expr);
+    expr = Selector(expr);
    }
   
   {return expr; }
@@ -743,6 +744,7 @@ SPExpression Selector(SPExpression expr) :
   SPExpression indexExpression;
 }
 {
+try{
   <LBRACKET>
   
   { 
@@ -762,6 +764,10 @@ SPExpression Selector(SPExpression expr) :
   { 
     select = new SPArrayExpression(line, expr, indexExpressions);
     return select; 
+  }
+  }
+  catch(Exception e){
+  return expr;
   }
 }
 
