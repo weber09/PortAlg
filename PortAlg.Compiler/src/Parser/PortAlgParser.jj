@@ -266,14 +266,14 @@ TOKEN :
    fields = new SPFieldDeclaration(line, mods, variables);
    classBody.add(fields);
   }
-	"inicio" { 
-        statements.add(new SPScannerDeclarator());
-        statements.addAll(arrayInitializers);
-            }
+	"inicio" 
+  { 
+   statements.add(new SPScannerDeclarator());
+   statements.addAll(arrayInitializers);
+  }
 	(statement = Statement()
-  {
-  statements.add(statement);
-  })*
+  { statements.add(statement); })*
+  
   { body = new SPBlock(line, statements); }
 	"fimalgoritmo"
   {
@@ -452,7 +452,7 @@ Type type;
 
 SPStatement Statement() :
 {
-SPStatement statement;
+SPStatement statement = null;
 }
 {
  LOOKAHEAD(2)
@@ -801,28 +801,56 @@ SPExpression BooleanLiteral() :
 void SwitchStatement() :
 {}
 {
-  "escolha" Expression()
+  <ESCOLHA> Expression()
     ( SwitchLabel() ( Statement() )* )*
-   "fimescolha"
+   <FIMESCOLHA>
 }
 
 void SwitchLabel() :
 {}
 {
-  "caso" Expression() ":"
+  <CASO> Expression() <DDOTS>
 |
-  "padrao" ":"
+  <PADRAO> <DDOTS>
 }
 
-void IfStatement() :
+SPStatement IfStatement() :
 /*
  * The disambiguating algorithm of JavaCC automatically binds dangling
  * else's to the innermost if statement.  The LOOKAHEAD specification
  * is to tell JavaCC that we know what we are doing.
  */
-{}
 {
-  "se" Expression() "entao" (Statement())* [ LOOKAHEAD(1) "senao" (Statement())* ] "fimse"
+int line;
+SPExpression testExpr;
+ArrayList<SPStatement> thenStatements = new ArrayList<SPStatement>();
+SPStatement thenStatement;
+ArrayList<SPStatement> elseStatements = new ArrayList<SPStatement>();
+SPStatement elseStatement;
+SPStatement thenBlock;
+SPStatement elseBlock;
+}
+{
+  <SE> { line = token.beginLine; }
+  testExpr = Expression()
+  <ENTAO>
+    ( 
+      thenStatement = Statement()
+      {thenStatements.add(thenStatement);}
+    )*
+    
+  [ 
+    LOOKAHEAD(1) <SENAO> 
+                   (  elseStatement = Statement()
+                  {  elseStatements.add(elseStatement); } )*
+                 
+  ] 
+  <FIMSE>
+  {
+    thenBlock = new SPBlock(line, thenStatements);
+    elseBlock = new SPBlock(line, elseStatements);
+    return new SPIfStatement(line, test, thenBlock, elseBlock);
+   }
 }
 
 void WhileStatement() :

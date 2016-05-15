@@ -96,7 +96,7 @@ variables = VariableInitializer(arrayInitializers);
    classBody.add(fields);
     jj_consume_token(INICIO);
 statements.add(new SPScannerDeclarator());
-        statements.addAll(arrayInitializers);
+   statements.addAll(arrayInitializers);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -360,7 +360,7 @@ type = Type.STRING;
 
 /*STATEMENTS*/
   static final public 
-SPStatement Statement() throws ParseException {SPStatement statement;
+SPStatement Statement() throws ParseException {SPStatement statement = null;
     if (jj_2_3(2)) {
       statement = StatementExpression();
     } else {
@@ -937,9 +937,17 @@ expr = new SPLiteralFalse(token.beginLine);
     }
   }
 
-  static final public void IfStatement() throws ParseException {
+  static final public SPStatement IfStatement() throws ParseException {int line;
+SPExpression testExpr;
+ArrayList<SPStatement> thenStatements = new ArrayList<SPStatement>();
+SPStatement thenStatement;
+ArrayList<SPStatement> elseStatements = new ArrayList<SPStatement>();
+SPStatement elseStatement;
+SPStatement thenBlock;
+SPStatement elseBlock;
     jj_consume_token(SE);
-    Expression();
+line = token.beginLine;
+    testExpr = Expression();
     jj_consume_token(ENTAO);
     label_16:
     while (true) {
@@ -972,7 +980,8 @@ expr = new SPLiteralFalse(token.beginLine);
         jj_la1[28] = jj_gen;
         break label_16;
       }
-      Statement();
+      thenStatement = Statement();
+thenStatements.add(thenStatement);
     }
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case SENAO:{
@@ -1008,7 +1017,8 @@ expr = new SPLiteralFalse(token.beginLine);
           jj_la1[29] = jj_gen;
           break label_17;
         }
-        Statement();
+        elseStatement = Statement();
+elseStatements.add(elseStatement);
       }
       break;
       }
@@ -1017,6 +1027,10 @@ expr = new SPLiteralFalse(token.beginLine);
       ;
     }
     jj_consume_token(FIMSE);
+thenBlock = new SPBlock(line, thenStatements);
+    elseBlock = new SPBlock(line, elseStatements);
+    {if ("" != null) return new SPIfStatement(line, test, thenBlock, elseBlock);}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void WhileStatement() throws ParseException {
