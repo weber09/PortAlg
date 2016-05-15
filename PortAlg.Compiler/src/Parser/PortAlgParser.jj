@@ -959,10 +959,29 @@ void ReturnStatement() :
   <RETORNA> Expression()
 }
 
-void WriteStatement() :
-{}
+SPStatement WriteStatement() :
 {
-	(<ESCREVA> | <ESCREVAL>) <LPAREN> Expression() ( <COMMA> Expression() )* <RPAREN>
+  int line;
+  boolean writeLine = false;
+  SPExpression expression;
+  ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
+}
+{
+	(
+    <ESCREVA> { line = token.beginLine; writeLine = false; } 
+  | <ESCREVAL> { line = token.beginLine; writeLine = true; }
+  ) 
+  <LPAREN> 
+  expression = Expression()
+   {expressionList.add(expression); } 
+  ( <COMMA> 
+    expression = Expression()
+    { expressionList.add(expression); } 
+  )*
+  <RPAREN>
+  {
+    return new SPWriteStatement(line, writeLine, expressionList);
+  }
 }
 
 void ReadStatement() :

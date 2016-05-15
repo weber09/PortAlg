@@ -1219,14 +1219,19 @@ controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
     Expression();
   }
 
-  static final public void WriteStatement() throws ParseException {
+  static final public SPStatement WriteStatement() throws ParseException {int line;
+  boolean writeLine = false;
+  SPExpression expression;
+  ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ESCREVA:{
       jj_consume_token(ESCREVA);
+line = token.beginLine; writeLine = false;
       break;
       }
     case ESCREVAL:{
       jj_consume_token(ESCREVAL);
+line = token.beginLine; writeLine = true;
       break;
       }
     default:
@@ -1235,7 +1240,8 @@ controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
       throw new ParseException();
     }
     jj_consume_token(LPAREN);
-    Expression();
+    expression = Expression();
+expressionList.add(expression);
     label_21:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1248,9 +1254,12 @@ controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
         break label_21;
       }
       jj_consume_token(COMMA);
-      Expression();
+      expression = Expression();
+expressionList.add(expression);
     }
     jj_consume_token(RPAREN);
+{if ("" != null) return new SPWriteStatement(line, writeLine, expressionList);}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void ReadStatement() throws ParseException {
