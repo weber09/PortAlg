@@ -1080,8 +1080,12 @@ body.add(statement);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void DoStatement() throws ParseException {
+  static final public SPStatement DoStatement() throws ParseException {SPExpression condition;
+SPStatement statement;
+ArrayList<SPStatement> block = new ArrayList<SPStatement>();
+int line;
     jj_consume_token(REPITA);
+line = token.beginLine;
     label_19:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1113,10 +1117,13 @@ body.add(statement);
         jj_la1[32] = jj_gen;
         break label_19;
       }
-      Statement();
+      statement = Statement();
+block.add(statement);
     }
     jj_consume_token(ATE);
-    Expression();
+condition = Expression();
+  {if ("" != null) return new SPDoStatement(line, condition, new SPBlock(line, block));}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void ForStatement() throws ParseException {

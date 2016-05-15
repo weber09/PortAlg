@@ -874,10 +874,23 @@ SPExpression condition;
   }
 }
 
-void DoStatement() :
-{}
+SPStatement DoStatement() :
 {
-  <REPITA> (Statement())* <ATE> Expression()
+SPExpression condition;
+SPStatement statement;
+ArrayList<SPStatement> block = new ArrayList<SPStatement>();
+int line;
+}
+{
+  <REPITA> {line = token.beginLine; } 
+  (statement = Statement()
+  { block.add(statement); })*
+  <ATE>
+  {
+  condition = Expression(); 
+  return new SPDoStatement(line, condition, new SPBlock(line, block));
+  }
+  
 }
 
 void ForStatement() :
