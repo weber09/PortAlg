@@ -1,6 +1,8 @@
 //javacc_options
 PARSER_BEGIN(PortAlgParser)
 
+package Parser;
+
 import AST.*;
 import java.util.UUID;
 import java.util.ArrayList;
