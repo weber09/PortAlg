@@ -234,7 +234,6 @@ TOKEN :
  SPCompilationUnit Specification() :
 {
   Token token = null;
-  SPCompilationUnit compilationUnit = null;
   int line = 0;
   String fileName = "";
   ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
@@ -243,7 +242,7 @@ TOKEN :
   ArrayList<SPVariableDeclarator> variables;
   SPFieldDeclaration fields;
   ArrayList<SPStatement> statements = new ArrayList<SPStatement>();
-  SPStatement aStatement;
+  SPStatement statement;
   ArrayList<SPFormalParameter> formalParameters = new ArrayList<SPFormalParameter>();
   String[] methodArgs = new String[1];
   Type methodArgsType;
@@ -304,7 +303,8 @@ void Function() :
 {
 	"funcao"
 	["var"]
-	VariableDeclarations()
+  //TODO: ajustar criaçao devariaveis da função
+	//VariableDeclarations()
 	(Statement())*
 	"fimfuncao"
 }

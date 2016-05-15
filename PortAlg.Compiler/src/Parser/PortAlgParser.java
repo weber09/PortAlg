@@ -43,7 +43,6 @@ class PortAlgParser implements PortAlgParserConstants {
 /*PROGRAM SPECIFICATION*/
   static final public 
  SPCompilationUnit Specification() throws ParseException {Token token = null;
-  SPCompilationUnit compilationUnit = null;
   int line = 0;
   String fileName = "";
   ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
@@ -52,7 +51,7 @@ class PortAlgParser implements PortAlgParserConstants {
   ArrayList<SPVariableDeclarator> variables;
   SPFieldDeclaration fields;
   ArrayList<SPStatement> statements = new ArrayList<SPStatement>();
-  SPStatement aStatement;
+  SPStatement statement;
   ArrayList<SPFormalParameter> formalParameters = new ArrayList<SPFormalParameter>();
   String[] methodArgs = new String[1];
   Type methodArgsType;
@@ -165,7 +164,6 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
       jj_la1[3] = jj_gen;
       ;
     }
-    VariableDeclarations();
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
