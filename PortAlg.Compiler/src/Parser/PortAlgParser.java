@@ -5,6 +5,7 @@ package Parser;
 import AST.*;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
@@ -1327,13 +1328,6 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(3, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_33()
  {
     if (jj_scan_token(ORASSIGN)) return true;
@@ -1459,6 +1453,13 @@ expression = new SPVariable(token.beginLine, token.image);
 
   static private boolean jj_3R_31()
  {
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_24()) return true;
     return false;
   }
 
