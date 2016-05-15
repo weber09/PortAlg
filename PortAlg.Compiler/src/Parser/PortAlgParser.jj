@@ -984,10 +984,30 @@ SPStatement WriteStatement() :
   }
 }
 
-void ReadStatement() :
-{}
+//TODO: Fazer leitura direta em posição de vetor/matriz
+SPStatement ReadStatement() : 
 {
-	<LEIA> <LPAREN> UnaryExpression() (<COMMA> UnaryExpression())* <RPAREN>
+int line;
+SPExpression expression;
+ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
+}
+{
+	<LEIA> {line = token.beginLine; }
+  <LPAREN> 
+  <IDENTIFIER>
+  {
+  expression = new SPVariable(token.beginLine, token.image); 
+  expressionList.add(expression); }
+  (
+    <COMMA>
+    <IDENTIFIER>
+    { expression = new SPVariable(token.beginLine, token.image); 
+    expressionList.add(expression); }
+  )*
+  <RPAREN>
+  {
+    return new SPReadStatement(line, expressionList, new SPVariable(line, "sp_inner_scanner"));
+  }
 }
 
 /*STATEMENTS*/

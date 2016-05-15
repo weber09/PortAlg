@@ -1262,10 +1262,16 @@ expressionList.add(expression);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void ReadStatement() throws ParseException {
+//TODO: Fazer leitura direta em posição de vetor/matriz
+  static final public SPStatement ReadStatement() throws ParseException {int line;
+SPExpression expression;
+ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
     jj_consume_token(LEIA);
+line = token.beginLine;
     jj_consume_token(LPAREN);
-    UnaryExpression();
+    jj_consume_token(IDENTIFIER);
+expression = new SPVariable(token.beginLine, token.image);
+  expressionList.add(expression);
     label_22:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1278,9 +1284,13 @@ expressionList.add(expression);
         break label_22;
       }
       jj_consume_token(COMMA);
-      UnaryExpression();
+      jj_consume_token(IDENTIFIER);
+expression = new SPVariable(token.beginLine, token.image);
+    expressionList.add(expression);
     }
     jj_consume_token(RPAREN);
+{if ("" != null) return new SPReadStatement(line, expressionList, new SPVariable(line, "sp_inner_scanner"));}
+    throw new Error("Missing return statement in function");
   }
 
   static private boolean jj_2_1(int xla)
