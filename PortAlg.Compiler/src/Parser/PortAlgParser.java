@@ -145,7 +145,12 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
 
         classBody.add(memberDecl);
 
-        aClass = typeDeclaration(fileName, classBody);
+        mods.clear();
+
+        mods.add("public");
+        mods.add("super");
+
+        aClass = new SPClassDeclaration(0, mods, fileName, Type.OBJECT, classBody);
 
         typeDeclarations.add(aClass);
 
@@ -1326,40 +1331,6 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(3, xla); }
   }
 
-  static private boolean jj_3R_33()
- {
-    if (jj_scan_token(ORASSIGN)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23()
- {
-    if (jj_scan_token(VETOR)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_30()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(78)) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_28()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) return true;
-    }
-    return false;
-  }
-
   static private boolean jj_3R_25()
  {
     if (jj_3R_28()) return true;
@@ -1458,6 +1429,40 @@ expression = new SPVariable(token.beginLine, token.image);
  {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_24()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_33()
+ {
+    if (jj_scan_token(ORASSIGN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_23()
+ {
+    if (jj_scan_token(VETOR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_30()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(77)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(78)) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_28()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) return true;
+    }
     return false;
   }
 

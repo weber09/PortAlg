@@ -290,7 +290,12 @@ TOKEN :
 
         classBody.add(memberDecl);
 
-        aClass = typeDeclaration(fileName, classBody);
+        mods.clear();
+
+        mods.add("public");
+        mods.add("super");
+
+        aClass = new SPClassDeclaration(0, mods, fileName, Type.OBJECT, classBody);
 
         typeDeclarations.add(aClass);
   
