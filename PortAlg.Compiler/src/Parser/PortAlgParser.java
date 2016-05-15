@@ -1033,9 +1033,13 @@ thenBlock = new SPBlock(line, thenStatements);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void WhileStatement() throws ParseException {
+  static final public SPStatement WhileStatement() throws ParseException {SPStatement statement;
+ArrayList<SPStatement> body = new ArrayList<SPStatement>();
+int line;
+SPExpression condition;
     jj_consume_token(ENQUANTO);
-    Expression();
+line = token.beginLine;
+  condition = Expression();
     jj_consume_token(FACA);
     label_18:
     while (true) {
@@ -1068,9 +1072,12 @@ thenBlock = new SPBlock(line, thenStatements);
         jj_la1[31] = jj_gen;
         break label_18;
       }
-      Statement();
+      statement = Statement();
+body.add(statement);
     }
     jj_consume_token(FIMENQUANTO);
+{if ("" != null) return new SPWhileStatement(line, condition, new SPBlock(line, body));}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void DoStatement() throws ParseException {

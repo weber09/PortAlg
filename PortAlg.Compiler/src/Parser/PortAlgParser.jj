@@ -853,10 +853,25 @@ SPStatement elseBlock;
    }
 }
 
-void WhileStatement() :
-{}
+SPStatement WhileStatement() :
 {
-  <ENQUANTO> Expression() <FACA> (Statement())* <FIMENQUANTO>
+SPStatement statement;
+ArrayList<SPStatement> body = new ArrayList<SPStatement>();
+int line;
+SPExpression condition;
+}
+{
+  <ENQUANTO> 
+  { line = token.beginLine;
+  condition = Expression(); }
+  <FACA> 
+  ( statement = Statement()
+    {body.add(statement);})*
+   
+  <FIMENQUANTO>
+  {
+  return new SPWhileStatement(line, condition, new SPBlock(line, body));
+  }
 }
 
 void DoStatement() :
