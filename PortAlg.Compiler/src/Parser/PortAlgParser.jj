@@ -1,6 +1,10 @@
 //javacc_options
 PARSER_BEGIN(PortAlgParser)
 
+import AST.*;
+import java.util.UUID;
+import java.util.ArrayList;
+
 class PortAlgParser{
 	 public static void main(String args[]) {
     PortAlgParser parser;
@@ -98,7 +102,6 @@ TOKEN :
 | <ESCREVA: "escreva">
 | <ESCREVAL: "escreval">
 | <LEIA: "leia">
-| <LEIAL: "leial">
 | <SE: "se">
 | <ENTAO: "entao">
 | <FIMSE: "fimse">
@@ -180,6 +183,7 @@ TOKEN :
 | < COMMA: "," >
 | < DOT: "." >
 | <DOUBLEDOT: "..">
+| <DDOTS: ":">
 }
 
 /* OPERATORS */
@@ -223,15 +227,72 @@ TOKEN :
 
 /*PROGRAM SPECIFICATION*/
 
- void Specification() :
-{}
+ SPCompilationUnit Specification() :
 {
-	"algoritmo" (<STRING_LITERAL>)*
+  Token token = null;
+  SPCompilationUnit compilationUnit = null;
+  int line = 0;
+  String fileName = "";
+  ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
+  ArrayList<SPMember> classBody = new ArrayList<SPMember>();
+  ArrayList<String> mods = new ArrayList<String>(Arrays.asList("public", "static"));
+  ArrayList<SPVariableDeclarator> variables;
+  SPFieldDeclaration fields;
+  ArrayList<SPStatement> statements = new ArrayList<SPStatement>();
+  SPStatement aStatement;
+  ArrayList<SPFormalParameter> formalParameters = new ArrayList<SPFormalParameter>();
+  String[] methodArgs = new String[1];
+  Type methodArgsType;
+  SPFormalParameter formalParameter;
+  SPMember memberDecl;
+  SPAST aClass;
+  ArrayList<SPAST> typeDeclarations = new ArrayList<SPAST>();
+  SPBlock body;
+}
+{
+  <ALGORITMO> 
+  {
+    line = token.beginLine; 
+    fileName = UUID.randomUUID().toString();
+  }
+  (<STRING_LITERAL>)*
 	(Function())*
-	VariableInitializer()
-	"inicio"
-	(Statement())*
+	{ 
+  variables = VariableInitializer(arrayInitializers);
+  try {
+    variables.add(new SPVariableDeclarator(0, "sp_inner_scanner", Type.typeFor(Class.forName("java.util.Scanner"))));
+  } catch (ClassNotFoundException ex) {
+  }
+   fields = new SPFieldDeclaration(line, mods, variables);
+   classBody.add(fields);
+  }
+	"inicio" { 
+        statements.add(new SPScannerDeclarator());
+        statements.addAll(arrayInitializers);
+            }
+	(statement = Statement()
+  {
+  statements.add(statement);
+  })*
+  { body = new SPBlock(line, statements); }
 	"fimalgoritmo"
+  {
+        methodArgsType = Type.typeFor(methodArgs.getClass());
+
+        formalParameter = new SPFormalParameter(line, "args", methodArgsType);
+
+        formalParameters.add(formalParameter);
+
+        memberDecl = new SPMethodDeclaration(line, mods, "main", Type.VOID, formalParameters, body);
+
+        classBody.add(memberDecl);
+
+        aClass = typeDeclaration(fileName, classBody);
+
+        typeDeclarations.add(aClass);
+  
+        return new SPCompilationUnit(fileName, line, null, null, typeDeclarations);
+  }
 }
 
 void Function() :
@@ -248,178 +309,487 @@ void Function() :
 
 /*VARIABLES DECLARATION BLOCK*/
 
-void VariableInitializer():
+ArrayList<SPVariableDeclarator> VariableInitializer(ArrayList<SPStatement> arrayInitializers):
 {}
 {
 	"var" 
-	VariableDeclarations()
+	{ return VariableDeclarations(arrayInitializers); }
 }
 
-void VariableDeclarations() :
+ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arrayInitializers) :
+{
+  ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
+  ArrayList<SPVariableDeclarator> typeVariables = null;
+  Type type = null;
+  ArrayList<SPExpression> dimensionsBounds = new ArrayList<SPExpression>();
+  ArrayList<SPExpression> lowerBounds = new ArrayList<SPExpression>();
+  int line = 0;
+  SPExpression lowerBound = null;
+  SPExpression upperBound = null;
+  SPExpression dimensionBounds = null;
+  boolean isArray = false;
+  SPNewArrayOp newArray = null;
+  SPExpression lhs = null;
+  SPAssignment assignmentExpression = null;
+}
+{
+    (
+      LOOKAHEAD(2)
+      (
+        { typeVariables = VariableDeclaratorId(); } ":" 
+                [
+                  <VETOR> { line = token.beginLine; isArray = true; }
+                  <LBRACKET> 
+                  <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
+                  <DOUBLEDOT> 
+                  <INTEGER_LITERAL> {
+                                      upperBound = new SPLiteralInt(token.beginLine, token.image);
+                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                      dimensionsBounds.add(dimensionBounds); 
+                                     }
+                  [ 
+                    <COMMA> 
+                    <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
+                    <DOUBLEDOT> 
+                    <INTEGER_LITERAL> {
+                                      upperBound = new SPLiteralInt(token.beginLine, token.image);
+                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                      dimensionsBounds.add(dimensionBounds); 
+                                     }
+                  ]
+                  <RBRACKET>
+                  <DE>
+                 ]
+               { 
+                type = Type();
+                
+                if(isArray){
+                  type = new ArrayTypeName(type, dimensionsBounds.size());
+                  newArray = new SPNewArrayOp(line, type, dimensionsBounds, lowerBounds);
+                }
+                
+                for(SPVariableDeclarator variable : typeVariables){
+                  variable.setType(type);
+                  variables.add(variable);
+                  
+                  if(isArray){
+                    lhs = new SPVariable(variable.line(), variable.getName());
+                    assignmentExpression = new SPAssignOp(variable.line(), null, null);
+                    assignmentExpression.setLhs(lhs);
+                    assignmentExpression.setRhs(newArray);
+                    assignmentExpression.isStatementExpression = true;
+                    arrayInitializers.add(new SPStatementExpression(variable.line(), assignmentExpression));
+                  }
+                }
+                 
+               }))*
+     { return variables; }
+}
+
+ArrayList<SPVariableDeclarator> VariableDeclaratorId() :
 {}
 {
-    (LOOKAHEAD(2)(VariableDeclaratorId() ":" [<VETOR> <LBRACKET> <INTEGER_LITERAL> <DOUBLEDOT> <INTEGER_LITERAL> [<COMMA> <INTEGER_LITERAL> <DOUBLEDOT> <INTEGER_LITERAL> ] <RBRACKET> <DE>] Type()))*
+  { return NameList(); }
 }
 
-void VariableDeclaratorId() :
-{}
+ArrayList<SPVariableDeclarator> NameList() :
 {
-  NameList()
+ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
+SPVariableDeclarator variable = null;
 }
-
-void NameList() :
-{}
 {
-  Name() ( LOOKAHEAD(2) "," Name() )*
+    variable = Name()
+    { variables.add(variable); }
+  
+   (
+    LOOKAHEAD(2) <COMMA>
+      variable = Name()
+      { variables.add(variable); } 
+   )*
+   
+    { return variables; }
+   
 }
 
-void Name() :
-{}
+SPVariableDeclarator Name() :
 {
-   <IDENTIFIER> (<LBRACKET> Expression() <RBRACKET>)*
+int line = 0;
+String name = "";
+}
+{
+   <IDENTIFIER> 
+   {
+   line = token.beginLine;
+   name = token.image;
+   }
+    
+    {return new SPVariableDeclarator(line, name, null);}
 }
 
-void Type() :
-{}
+Type Type() :
+{
+Type type;
+}
 {
    <LOGICO>
+   { type = Type.BOOLEAN; }
 |
   <INTEIRO>
+  { type = Type.INT; }
 |
   <DECIMAL>
+  { type = Type.DOUBLE; }
 |
   <LITERAL>
+  { type = Type.STRING; }
+  
+ {return type; }
 }
 
 /*VARIABLES DECLARATION BLOCK*/
 
 /*STATEMENTS*/
 
-void Statement() :
-{}
+SPStatement Statement() :
+{
+SPStatement statement;
+}
 {
  LOOKAHEAD(2)
- StatementExpression()
+ statement = StatementExpression()
 |
-  SwitchStatement()
+  statement = SwitchStatement()
 |
-  IfStatement()
+  statement = IfStatement()
 |
-  WhileStatement()
+  statement = WhileStatement()
 |
-  DoStatement()
+  statement = DoStatement()
 |
-  ForStatement()
+  statement = ForStatement()
 |
-  BreakStatement()
+  statement = BreakStatement()
 |
-  ContinueStatement()
+  statement = ContinueStatement()
 |
-  WriteStatement()
+  statement = WriteStatement()
 |
-  ReadStatement()
+  statement = ReadStatement()
+  
+  {return statement; }
 }
 
 void StatementExpression() :
-{}
 {
-  Name()
-  AssignmentOperator()
-  Expression()
+SPExpression lhs;
+int line;
+SPAssignment assignmentExpression;
+SPExpression rhs;
+
+}
+{
+  lhs = UnaryExpression()
+  { line = token.beginLine; }
+  assignmentExpression = AssignmentOperator()
+  rhs = Expression()
+  {
+    assignmentExpression.setLhs(lhs);
+    assignmentExpression.setRhs(rhs);
+
+    return new SPStatementExpression(line, assignmentExpression);
+  }
 }
 
-void AssignmentOperator() :
-{}
+SPAssignment AssignmentOperator() :
 {
-  "<-" | "*<-" | "/<-" | "%<-" | "+<-" | "-<-" | "&<-" | "^<-" | "|<-"
+  SPAssignment assignExpression;
+}
+{
+  <ASSIGN> 
+  {
+    assignExpression = new SPAssignOp(token.beginLine, null, null);
+    assignExpression.isStatementExpression = true;
+  }
+ | "*<-" 
+ | "/<-" 
+ | "%<-" 
+ | "+<-" 
+ | "-<-" 
+ | "&<-" 
+ | "^<-" 
+ | "|<-"
+ {
+  return assignExpression;
+ }
 }
 
-void Expression() :
+SPExpression Expression() :
 {}
 {
-	ConditionalOrExpression()
+	{ return ConditionalOrExpression(); }
 }
 
-void ConditionalOrExpression() :
-{}
+SPExpression ConditionalOrExpression() :
 {
-  ConditionalAndExpression() ( "ou" ConditionalAndExpression() )*
+int line;
+SPExpression lhs;
+SPExpression rhs;
+}
+{
+  lhs = ConditionalAndExpression() 
+  ( 
+    <SC_OR> 
+    {
+      rhs = ConditionalAndExpression();
+      lhs = new SPLogicalOrOp(line, lhs, rhs);
+    } 
+  )*
+  
+  { return lhs; }
 }
 
-void ConditionalAndExpression() :
-{}
+SPExpression ConditionalAndExpression() :
 {
-  EqualityExpression() ( "e" EqualityExpression() )*
+  int line;
+  SPExpression lhs;
+  SPExpression rhs;
+}
+{
+  lhs = EqualityExpression() 
+  ( 
+    <SC_AND>
+    { 
+      rhs = EqualityExpression();
+      lhs = new SPLogicalAndOp(line, lhs, rhs);
+    } 
+  )*
+  {return lhs;}
 }
 
-void EqualityExpression() :
-{}
+SPExpression EqualityExpression() :
 {
-  RelationalExpression() ( ( "=" | "<>" ) RelationalExpression() )*
+  int line;
+  SPExpression lhs;
+  SPExpression rhs;
+  boolean equal = false;
+}
+{
+  lhs = RelationalExpression() 
+  ( 
+    ( <EQ> { equal = true; }
+    | <NE> { equal = false; }
+    ) 
+    { 
+      rhs = RelationalExpression();
+      if(equal){
+        lhs = new SPEqualOp(line, lhs, rhs);
+      } else{
+        lhs = new SPNotEqualOp(line, lhs, rhs);
+      }
+    }     
+  )*
+  
+  { return lhs; }
 }
 
-void RelationalExpression() :
-{}
+SPExpression RelationalExpression() :
 {
-  AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" ) AdditiveExpression() )*
+  int line;
+  SPExpression lhs;
+  SPExpression rhs;
+  int operation = 0;
+}
+{
+  lhs = AdditiveExpression() 
+  ( 
+    ( <LT> {operation = 1; }
+    | <GT> {operation = 2; }
+    | <LE> {operation = 3; }
+    | <GE> {operation = 4; }
+    ) 
+    { 
+      rhs = AdditiveExpression();
+      switch(operation){
+        case 1 : { lhs = new SPLessThanOp(line, lhs, rhs);
+                   break; }
+        case 2 : { lhs = new SPGreaterThanOp(line, lhs, rhs);
+                   break; }
+        case 3 : { lhs = new SPLessEqualOp(line, lhs, rhs);
+                   break; }
+        default : { lhs = new SPGreaterOp(line, lhs, rhs);
+                   break; }
+      }
+     }
+  )*
+  
+  { return lhs; }
 }
 
-void AdditiveExpression() :
-{}
+SPExpression AdditiveExpression() :
 {
-  MultiplicativeExpression() (LOOKAHEAD(2) ( "+" | "-" ) MultiplicativeExpression() )*
+int line;
+SPExpression lhs;
+SPExpression rhs;
+boolean sum = false;
+}
+{
+  lhs = MultiplicativeExpression() 
+  (
+    LOOKAHEAD(2)
+     ( <PLUS> { sum = true; }
+     | <MINUS> {sum = false; }
+     ) 
+     { 
+        rhs = MultiplicativeExpression();
+        if(sum){
+          lhs = new SPPlusOp(line, lhs, rhs);
+        } else {
+          lhs = new SPSubtractOp(line, lhs, rhs);
+        }
+      }
+  )*
+  { return lhs; }
 }
 
-void MultiplicativeExpression() :
-{}
+SPExpression MultiplicativeExpression() :
 {
-  PowerExpression() ( ( "*" | "/" | "%" | "\\" ) PowerExpression() )*
+  int line;
+  SPExpression lhs;
+  SPExpression rhs;
+}
+{
+  lhs = PowerExpression()
+    ( 
+      ( "*" { lhs = new SPMultiplyOp(line, lhs, null); } 
+      | "/" { lhs = new SPDivisionOp(line, lhs, null); }
+      | "%" { lhs = new SPMultiplyOp(line, lhs, null); } //TODO: FAZER UMA OP PARA RESTO DA DIVISÃO INTEIRA (SO APLICAVEL PARA OPERANDOS INTEIROS
+      | "\\" { lhs = new SPMultiplyOp(line, lhs, null); } //TODO: FAZER UMA OP PARA QUOCIENTE DA DIVISÃO (SO APLICAVEL PARA OPERANDOS INTEIROS)
+      ) 
+      { 
+        rhs = PowerExpression(); 
+        lhs.setRhs(rhs);
+      } 
+    )*
+    
+  { return lhs; }
 }
 
-void PowerExpression() :
-{}
+SPExpression PowerExpression() :
 {
-	UnaryExpression() ["^" PowerExpression()]
+int line;
+SPExpression lhs;
+SPExpression rhs;
+}
+{
+	lhs = UnaryExpression() 
+  
+  //TODO: fazer funcionar a potenciacao
+  //[
+  //  <XOR>
+  //   PowerExpression()
+  //]
+  
+  {return lhs; }
 }
 
-void UnaryExpression() :
-{}
+SPExpression UnaryExpression() :
 {
-  ( "+" | "-" ) UnaryExpression()
+  int line;
+  SPExpression expr;
+}
+{
+  ( 
+    "+" 
+  | "-" //TODO: negar expressao
+  ) 
+  { expr = UnaryExpression(); }
 |
-  PrimaryExpression()
+  { expr = PostfixExpression(); }
+  
+{return expr; }
 }
 
-void PrimaryExpression() :
-{}
+SPExpression PostfixExpression() : 
 {
-	Name()
-|
-	"(" Expression() ")"
-|
-	Literal()
+  SPExpression expr;
+}
+{
+  expr = PrimaryExpression()
+  {
+    //expr = Selector(expr);
+   }
+  
+  {return expr; }
 }
 
-void Literal() :
-{}
+SPExpression PrimaryExpression() :
 {
-  <INTEGER_LITERAL>
+  SPExpression expr;
+}
+{
+	<IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
 |
-  <FLOATING_POINT_LITERAL>
+	<LPAREN> { expr = Expression(); } <RPAREN>
 |
-  <CHARACTER_LITERAL>
-|
-  <STRING_LITERAL>
-|
-  BooleanLiteral()
+	{ expr = Literal(); }
+  
+{return expr; }
 }
 
-void BooleanLiteral() :
-{}
+SPExpression Selector(SPExpression expr) :
 {
-  <VERDADEIRO>
+  SPExpression select;
+  ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
+  SPExpression indexExpression;
+}
+{
+  <LBRACKET>
+  
+  { 
+    indexExpression = Expression();
+    indexExpressions.add(indexExpression);
+  }
+  
+  ( <COMMA>
+    { 
+      indexExpression = Expression();
+      indexExpressions.add(indexExpression);
+     }
+  )*
+  
+  <RBRACKET>
+  
+  { 
+    select = new SPArrayExpression(line, expr, indexExpressions);
+    return select; 
+  }
+}
+
+SPExpression Literal() :
+{
+  SPexpression expr;
+}
+{
+  <INTEGER_LITERAL> { expr = new SPLiteralInt(token.beginLine, token.image); }
 |
-  <FALSO>
+  <FLOATING_POINT_LITERAL> { expr = new SPLiteralDecimal(token.beginLine, token.image); }
+|
+  <STRING_LITERAL> { expr = new SPLiteralString(token.beginLine, token.image); }
+|
+  { expr = BooleanLiteral(); }
+  
+ {return expr; }
+}
+
+SPExpression BooleanLiteral() :
+{
+  SPExpression expr;
+}
+{
+  <VERDADEIRO> { expr = new SPLiteralTrue(token.beginLine); }
+|
+  <FALSO> { expr = new SPLiteralFalse(token.beginLine); }
+{ return expr; }
 }
 
 void SwitchStatement() :
@@ -452,53 +822,49 @@ void IfStatement() :
 void WhileStatement() :
 {}
 {
-  "enquanto" Expression() "faca" (Statement())* "fimenquanto"
+  <ENQUANTO> Expression() <FACA> (Statement())* <FIMENQUANTO>
 }
 
 void DoStatement() :
 {}
 {
-  "repita" (Statement())* "ate" Expression()
+  <REPITA> (Statement())* <ATE> Expression()
 }
 
 void ForStatement() :
 {}
 {
-  "para" <IDENTIFIER> "de" Expression() "ate" Expression() "faca" (Statement())* "fimpara"
+  <PARA> <IDENTIFIER> <DE> Expression() <ATE> Expression() <FACA> (Statement())* <FIMPARA>
 }
 
 void BreakStatement() :
 {}
 {
-  "parar"
+  <PARAR>
 }
 
 void ContinueStatement() :
 {}
 {
-  "continuar"
+  <CONTINUAR>
 }
 
 void ReturnStatement() :
 {}
 {
-  "retorna" [LOOKAHEAD(2) Expression() ]
+  <RETORNA> Expression()
 }
 
 void WriteStatement() :
 {}
 {
-	("escreva" | "escreval") "(" [ (Name() | Literal()) ( "," (Name() | Literal()) )* ] ")"
+	(<ESCREVA> | <ESCREVAL>) <LPAREN> Expression() ( <COMMA> Expression() )* <RPAREN>
 }
 
 void ReadStatement() :
 {}
 {
-	("leia" | "leial") "("NameList()")"
+	<LEIA> <LPAREN> UnaryExpression() (<COMMA> UnaryExpression())* <RPAREN>
 }
-
-//colocar producao para um "do-while"
-
-
 
 /*STATEMENTS*/

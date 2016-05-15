@@ -11,6 +11,14 @@ abstract class SPBinaryExpression extends SPExpression {
 
     protected SPExpression rhs;
 
+    public void setLhs( SPExpression lhs){
+        this.lhs = lhs;
+    }
+
+    public void setRhs( SPExpression rhs){
+        this.rhs = rhs;
+    }
+
     protected int opcode;
 
     protected SPBinaryExpression(int line, SPExpression lhs, SPExpression rhs) {
