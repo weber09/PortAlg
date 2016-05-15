@@ -1126,13 +1126,41 @@ condition = Expression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public void ForStatement() throws ParseException {
+  static final public SPStatement ForStatement() throws ParseException {int line;
+ArrayList<SPStatement> body = new ArrayList<SPStatement>();
+SPStatement statement;
+SPVariable controlVariable;
+SPExpression controlInitExpression;
+SPExpression controlEndExpression;
+SPStatement controlAssignment;
+SPStatement controlVariableInitialization;
+SPExpression pace;
+SPExpression controlVariableInc;
+SPExpression assignControlVariableInc;
+SPExpression condition;
+SPStatement controlVariableIncStm;
     jj_consume_token(PARA);
+line = token.beginLine;
     jj_consume_token(IDENTIFIER);
+controlVariable = new SPVariable( token.beginLine, token.image );
     jj_consume_token(DE);
-    Expression();
+    controlInitExpression = Expression();
+controlAssignment = new SPAssignOp(line, controlVariabel, controlInitExpression);
+    controlAssignment.isStatementExpression = true;
+    controlVariableInitialization = new SPStatementExpression(line, controlAssignment);
     jj_consume_token(ATE);
-    Expression();
+    controlEndExpression = Expression();
+pace = new SPLiteralInt(line, "1");
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case PASSO:{
+      jj_consume_token(PASSO);
+      pace = Expression();
+      break;
+      }
+    default:
+      jj_la1[33] = jj_gen;
+      ;
+    }
     jj_consume_token(FACA);
     label_20:
     while (true) {
@@ -1162,12 +1190,20 @@ condition = Expression();
         break;
         }
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[34] = jj_gen;
         break label_20;
       }
-      Statement();
+      statement = Statement();
+body.add(statement);
     }
     jj_consume_token(FIMPARA);
+controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
+   assignControlVariableInc = new SPAssignOp(line, controlVariabel, controlVariableInc);
+   assignControlVariableInc.isStatementExpression = true;
+   controlVariableIncStm = new SPStatementExpression(line, assignControlVariableInc);
+   condition = new SPGreaterThanOp(line, controlVariabel, controlLimit);
+   {if ("" != null) return new SPForStatement(line, controlVariableInitialization, controlVariableIncStm, condition, new SPBlock(line, body));}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void BreakStatement() throws ParseException {
@@ -1194,7 +1230,7 @@ condition = Expression();
       break;
       }
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1208,7 +1244,7 @@ condition = Expression();
         break;
         }
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[36] = jj_gen;
         break label_21;
       }
       jj_consume_token(COMMA);
@@ -1229,7 +1265,7 @@ condition = Expression();
         break;
         }
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[37] = jj_gen;
         break label_22;
       }
       jj_consume_token(COMMA);
@@ -1270,26 +1306,6 @@ condition = Expression();
     finally { jj_save(3, xla); }
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_scan_token(DDOTS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) jj_scanpos = xsp;
-    return false;
-  }
-
-  static private boolean jj_3_4()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_26()) {
-    jj_scanpos = xsp;
-    if (jj_3R_27()) return true;
-    }
-    return false;
-  }
-
   static private boolean jj_3R_31()
  {
     return false;
@@ -1318,9 +1334,9 @@ condition = Expression();
  {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(76)) {
+    if (jj_scan_token(77)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(77)) return true;
+    if (jj_scan_token(78)) return true;
     }
     return false;
   }
@@ -1361,19 +1377,19 @@ condition = Expression();
     xsp = jj_scanpos;
     if (jj_3R_32()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(85)) {
-    jj_scanpos = xsp;
     if (jj_scan_token(86)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(90)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(83)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(84)) {
     jj_scanpos = xsp;
     if (jj_scan_token(87)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(89)) {
+    if (jj_scan_token(91)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(84)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(85)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(88)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(90)) {
     jj_scanpos = xsp;
     if (jj_3R_33()) return true;
     }
@@ -1405,6 +1421,26 @@ condition = Expression();
     return false;
   }
 
+  static private boolean jj_3_1()
+ {
+    if (jj_scan_token(DDOTS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_4()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_26()) {
+    jj_scanpos = xsp;
+    if (jj_3R_27()) return true;
+    }
+    return false;
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public PortAlgParserTokenManager token_source;
@@ -1417,7 +1453,7 @@ condition = Expression();
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[37];
+  static final private int[] jj_la1 = new int[38];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1427,13 +1463,13 @@ condition = Expression();
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x8f000000,0x3000000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x0,0x8f000000,0x3000000,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x400000,0x10000,0x4a12,0x0,0x4a12,0x20000000,0x0,0x2000,0x4a12,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x20000000,0x4c0000,0x0,0x500,0x4a12,0x500,0x4a12,0x4a12,0x0,0x4a12,0x4a12,0x4a12,0x0,0x20000000,0x20000000,};
+      jj_la1_1 = new int[] {0x800000,0x10000,0x4a12,0x0,0x4a12,0x40000000,0x0,0x2000,0x4a12,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x40000000,0x980000,0x0,0x500,0x4a12,0x500,0x4a12,0x4a12,0x0,0x4a12,0x4a12,0x40000,0x4a12,0x0,0x40000000,0x40000000,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x7f83002,0x0,0x7f83002,0x0,0x0,0x0,0x0,0x7f80002,0x100,0x200,0x30,0x30,0xcc,0xcc,0x3000,0x5c000,0x5c000,0x3000,0x3000,0x8000000,0x0,0x0,0x0,0x0,0x7f83002,0x0,0x7f83002,0x7f83002,0x0,0x7f83002,0x7f83002,0x7f83002,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0xff06004,0x0,0xff06004,0x0,0x0,0x0,0x0,0xff00004,0x200,0x400,0x60,0x60,0x198,0x198,0x6000,0xb8000,0xb8000,0x6000,0x6000,0x10000000,0x0,0x0,0x0,0x0,0xff06004,0x0,0xff06004,0xff06004,0x0,0xff06004,0xff06004,0x0,0xff06004,0x0,0x0,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[4];
   static private boolean jj_rescan = false;
@@ -1457,7 +1493,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1472,7 +1508,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1490,7 +1526,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1501,7 +1537,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1518,7 +1554,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1528,7 +1564,7 @@ condition = Expression();
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1641,12 +1677,12 @@ condition = Expression();
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[94];
+    boolean[] la1tokens = new boolean[95];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 38; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1661,7 +1697,7 @@ condition = Expression();
         }
       }
     }
-    for (int i = 0; i < 94; i++) {
+    for (int i = 0; i < 95; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

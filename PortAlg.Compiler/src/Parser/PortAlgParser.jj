@@ -125,6 +125,7 @@ TOKEN :
 | <FIMESCOLHA: "fimescolha">
 | <FUNCAO: "funcao">
 | <FIMFUNCAO: "fimfuncao">
+| <PASSO: "passo">
 }
 
 /*LITERALS*/
@@ -893,10 +894,51 @@ int line;
   
 }
 
-void ForStatement() :
-{}
+SPStatement ForStatement() :
 {
-  <PARA> <IDENTIFIER> <DE> Expression() <ATE> Expression() <FACA> (Statement())* <FIMPARA>
+int line;
+ArrayList<SPStatement> body = new ArrayList<SPStatement>();
+SPStatement statement;
+SPVariable controlVariable;
+SPExpression controlInitExpression;
+SPExpression controlEndExpression;
+SPStatement controlAssignment;
+SPStatement controlVariableInitialization;
+SPExpression pace;
+SPExpression controlVariableInc;
+SPExpression assignControlVariableInc;
+SPExpression condition;
+SPStatement controlVariableIncStm;
+}
+{
+  <PARA> { line = token.beginLine; }
+  <IDENTIFIER> { controlVariable = new SPVariable( token.beginLine, token.image ); }
+  <DE> 
+  controlInitExpression = Expression() 
+  {
+    controlAssignment = new SPAssignOp(line, controlVariabel, controlInitExpression);
+    controlAssignment.isStatementExpression = true;
+    controlVariableInitialization = new SPStatementExpression(line, controlAssignment);
+  }
+  <ATE> 
+  controlEndExpression = Expression()
+  { pace = new SPLiteralInt(line, "1");}
+  [
+  <PASSO>
+  pace = Expression()
+  ] 
+  <FACA> 
+  (statement = Statement()
+  {body.add(statement);})*
+   <FIMPARA>
+   {
+   controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
+   assignControlVariableInc = new SPAssignOp(line, controlVariabel, controlVariableInc);
+   assignControlVariableInc.isStatementExpression = true;
+   controlVariableIncStm = new SPStatementExpression(line, assignControlVariableInc);
+   condition = new SPGreaterThanOp(line, controlVariabel, controlLimit);
+   return new SPForStatement(line, controlVariableInitialization, controlVariableIncStm, condition, new SPBlock(line, body));
+   }
 }
 
 void BreakStatement() :

@@ -89,93 +89,95 @@ public interface PortAlgParserConstants {
   /** RegularExpression Id. */
   int FIMFUNCAO = 49;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 50;
+  int PASSO = 50;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 51;
+  int INTEGER_LITERAL = 51;
   /** RegularExpression Id. */
-  int EXPONENT = 52;
+  int FLOATING_POINT_LITERAL = 52;
   /** RegularExpression Id. */
-  int CHARACTER_LITERAL = 53;
+  int EXPONENT = 53;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 54;
+  int CHARACTER_LITERAL = 54;
   /** RegularExpression Id. */
-  int LPAREN = 55;
+  int STRING_LITERAL = 55;
   /** RegularExpression Id. */
-  int RPAREN = 56;
+  int LPAREN = 56;
   /** RegularExpression Id. */
-  int LBRACE = 57;
+  int RPAREN = 57;
   /** RegularExpression Id. */
-  int RBRACE = 58;
+  int LBRACE = 58;
   /** RegularExpression Id. */
-  int LBRACKET = 59;
+  int RBRACE = 59;
   /** RegularExpression Id. */
-  int RBRACKET = 60;
+  int LBRACKET = 60;
   /** RegularExpression Id. */
-  int COMMA = 61;
+  int RBRACKET = 61;
   /** RegularExpression Id. */
-  int DOT = 62;
+  int COMMA = 62;
   /** RegularExpression Id. */
-  int DOUBLEDOT = 63;
+  int DOT = 63;
   /** RegularExpression Id. */
-  int DDOTS = 64;
+  int DOUBLEDOT = 64;
   /** RegularExpression Id. */
-  int ASSIGN = 65;
+  int DDOTS = 65;
   /** RegularExpression Id. */
-  int GT = 66;
+  int ASSIGN = 66;
   /** RegularExpression Id. */
-  int LT = 67;
+  int GT = 67;
   /** RegularExpression Id. */
-  int EQ = 68;
+  int LT = 68;
   /** RegularExpression Id. */
-  int NE = 69;
+  int EQ = 69;
   /** RegularExpression Id. */
-  int LE = 70;
+  int NE = 70;
   /** RegularExpression Id. */
-  int GE = 71;
+  int LE = 71;
   /** RegularExpression Id. */
-  int SC_OR = 72;
+  int GE = 72;
   /** RegularExpression Id. */
-  int SC_AND = 73;
+  int SC_OR = 73;
   /** RegularExpression Id. */
-  int INCR = 74;
+  int SC_AND = 74;
   /** RegularExpression Id. */
-  int DECR = 75;
+  int INCR = 75;
   /** RegularExpression Id. */
-  int PLUS = 76;
+  int DECR = 76;
   /** RegularExpression Id. */
-  int MINUS = 77;
+  int PLUS = 77;
   /** RegularExpression Id. */
-  int STAR = 78;
+  int MINUS = 78;
   /** RegularExpression Id. */
-  int SLASH = 79;
+  int STAR = 79;
   /** RegularExpression Id. */
-  int CSLASH = 80;
+  int SLASH = 80;
   /** RegularExpression Id. */
-  int XOR = 81;
+  int CSLASH = 81;
   /** RegularExpression Id. */
-  int REM = 82;
+  int XOR = 82;
   /** RegularExpression Id. */
-  int PLUSASSIGN = 83;
+  int REM = 83;
   /** RegularExpression Id. */
-  int MINUSASSIGN = 84;
+  int PLUSASSIGN = 84;
   /** RegularExpression Id. */
-  int STARASSIGN = 85;
+  int MINUSASSIGN = 85;
   /** RegularExpression Id. */
-  int SLASHASSIGN = 86;
+  int STARASSIGN = 86;
   /** RegularExpression Id. */
-  int ANDASSIGN = 87;
+  int SLASHASSIGN = 87;
   /** RegularExpression Id. */
-  int ORASSIGN = 88;
+  int ANDASSIGN = 88;
   /** RegularExpression Id. */
-  int XORASSIGN = 89;
+  int ORASSIGN = 89;
   /** RegularExpression Id. */
-  int REMASSIGN = 90;
+  int XORASSIGN = 90;
   /** RegularExpression Id. */
-  int IDENTIFIER = 91;
+  int REMASSIGN = 91;
   /** RegularExpression Id. */
-  int LETTER = 92;
+  int IDENTIFIER = 92;
   /** RegularExpression Id. */
-  int DIGIT = 93;
+  int LETTER = 93;
+  /** RegularExpression Id. */
+  int DIGIT = 94;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -238,6 +240,7 @@ public interface PortAlgParserConstants {
     "\"fimescolha\"",
     "\"funcao\"",
     "\"fimfuncao\"",
+    "\"passo\"",
     "<INTEGER_LITERAL>",
     "<FLOATING_POINT_LITERAL>",
     "<EXPONENT>",
