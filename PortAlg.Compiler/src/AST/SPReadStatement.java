@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static AST.CLConstants.*;
 
-class SPReadStatement extends SPStatement{
+public class SPReadStatement extends SPStatement{
 
     private ArrayList<SPExpression> params;
 

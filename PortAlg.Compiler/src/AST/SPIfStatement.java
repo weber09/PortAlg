@@ -2,7 +2,7 @@ package AST;
 
 import static AST.CLConstants.*;
 
-class SPIfStatement extends SPStatement {
+public class SPIfStatement extends SPStatement {
 
     private SPExpression condition;
     

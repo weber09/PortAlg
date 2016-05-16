@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static AST.CLConstants.*;
 
-class SPWriteStatement extends SPStatement{
+public class SPWriteStatement extends SPStatement{
 
     private boolean writeLine;
 

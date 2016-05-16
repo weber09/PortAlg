@@ -11,7 +11,7 @@ import static AST.CLConstants.*;
  * a list of its dimensions.
  */
 
-class SPNewArrayOp extends SPExpression {
+public class SPNewArrayOp extends SPExpression {
 
     private Type typeSpec;
 

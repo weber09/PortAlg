@@ -4,7 +4,7 @@ package AST;
  * Created by Gabriel on 08/03/2016.
  */
 
-class SPStatementExpression extends SPStatement {
+public class SPStatementExpression extends SPStatement {
     SPExpression expr;
 
     public SPStatementExpression(int line, SPExpression expr) {

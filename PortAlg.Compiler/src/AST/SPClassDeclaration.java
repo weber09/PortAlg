@@ -7,7 +7,7 @@ package AST;
         import java.util.ArrayList;
         import static AST.CLConstants.*;
 
-class SPClassDeclaration extends SPAST implements SPTypeDecl {
+public class SPClassDeclaration extends SPAST implements SPTypeDecl {
 
     private ArrayList<String> mods;
 

@@ -6,7 +6,7 @@ package AST;
 import java.util.ArrayList;
 import static AST.CLConstants.*;
 
-class SPMethodDeclaration
+public class SPMethodDeclaration
         extends SPAST implements SPMember {
 
     /** Method modifiers. */

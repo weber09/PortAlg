@@ -3,7 +3,7 @@ package AST;
 /**
  * Created by Gabriel on 08/03/2016.
  */
-class SPFormalParameter extends SPAST {
+public class SPFormalParameter extends SPAST {
 
         private String name;
 

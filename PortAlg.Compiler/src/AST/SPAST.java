@@ -5,7 +5,7 @@ package AST;
  */
 
 
-abstract class SPAST {
+abstract public class SPAST {
 
     public static SPCompilationUnit compilationUnit;
 

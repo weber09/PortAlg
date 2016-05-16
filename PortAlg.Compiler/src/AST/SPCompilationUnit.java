@@ -5,7 +5,7 @@ package AST;
  */
 import java.util.ArrayList;
 
-class SPCompilationUnit extends SPAST {
+public class SPCompilationUnit extends SPAST {
 
     private String fileName;
 

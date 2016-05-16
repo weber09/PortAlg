@@ -6,7 +6,7 @@ package AST;
 import java.util.ArrayList;
 
 
-class SPBlock extends SPStatement {
+public class SPBlock extends SPStatement {
 
     private ArrayList<SPStatement> statements;
 

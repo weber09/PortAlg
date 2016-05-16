@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static AST.CLConstants.*;
 
-class SPArrayExpression
+public class SPArrayExpression
         extends SPExpression implements SPLhs {
 
     private SPExpression theArray;

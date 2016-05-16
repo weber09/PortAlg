@@ -6,7 +6,7 @@ package AST;
 
 import static AST.CLConstants.*;
 
-class SPWhileStatement extends SPStatement{
+public class SPWhileStatement extends SPStatement{
 
     private SPExpression condition;
 

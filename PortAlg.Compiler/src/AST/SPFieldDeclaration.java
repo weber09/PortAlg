@@ -6,7 +6,7 @@ package AST;
 
 import java.util.ArrayList;
 
-class SPFieldDeclaration extends SPAST implements SPMember {
+public class SPFieldDeclaration extends SPAST implements SPMember {
 
     private ArrayList<String> mods;
 

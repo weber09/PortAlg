@@ -6,7 +6,7 @@ package AST;
 
 import static AST.CLConstants.*;
 
-class SPForStatement extends SPStatement{
+public class SPForStatement extends SPStatement{
 
     private SPStatement controlVariableInitialization;
 

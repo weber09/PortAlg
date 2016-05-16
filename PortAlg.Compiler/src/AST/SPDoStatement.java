@@ -6,7 +6,7 @@ import static AST.CLConstants.*;
  * Created by Gabriel on 30/03/2016.
  */
 
-class SPDoStatement extends SPStatement{
+public class SPDoStatement extends SPStatement{
 
     private SPExpression condition;
 

@@ -4,11 +4,11 @@ package AST;
  * Created by Gabriel on 08/03/2016.
  */
 
-abstract class SPExpression extends SPStatement {
+abstract public class SPExpression extends SPStatement {
 
-    protected Type type;
+    public Type type;
 
-    protected boolean isStatementExpression;
+    public boolean isStatementExpression;
 
     protected SPExpression(int line) {
         super(line);

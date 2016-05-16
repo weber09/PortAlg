@@ -4,12 +4,9 @@ package AST;
  * Created by Gabriel on 01/04/2016.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static AST.CLConstants.*;
 
-class SPScannerDeclarator extends SPStatement {
+public class SPScannerDeclarator extends SPStatement {
 
     private SPExpression scannerVariable;
 

@@ -5,7 +5,7 @@ package AST;
  */
 import static AST.CLConstants.*;
 
-class SPVariable extends SPExpression implements SPLhs {
+public class SPVariable extends SPExpression implements SPLhs {
 
     private String name;
 
