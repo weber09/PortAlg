@@ -32,8 +32,14 @@ class PortAlgParser implements PortAlgParserConstants {
       return;
     }
     try {
-      parser.Specification();
+       SPCompilationUnit ast = parser.Specification();
       System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Algol file parsed successfully.");
+      ast.preAnalyze();
+      ast.analyze(null);
+      String outputDir = "C:\u005c\u005cAlgolBytecodes";
+      CLEmitter clEmitter = new CLEmitter(true);
+      clEmitter.destinationDir(outputDir);
+      ast.codegen(clEmitter);
     } catch (ParseException e) {
       System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
           System.out.println(e.getMessage());
@@ -42,8 +48,7 @@ class PortAlgParser implements PortAlgParserConstants {
 
 /*PROGRAM SPECIFICATION*/
   static final public 
- SPCompilationUnit Specification() throws ParseException {Token token = null;
-  int line = 0;
+ SPCompilationUnit Specification() throws ParseException {int line = 0;
   String fileName = "";
   ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
   ArrayList<SPMember> classBody = new ArrayList<SPMember>();
@@ -112,9 +117,8 @@ statements.add(new SPScannerDeclarator());
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -122,7 +126,8 @@ statements.add(new SPScannerDeclarator());
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
@@ -182,9 +187,8 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -192,7 +196,8 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
@@ -228,72 +233,64 @@ ArrayList<SPVariableDeclarator> VariableInitializer(ArrayList<SPStatement> array
   SPNewArrayOp newArray = null;
   SPExpression lhs = null;
   SPAssignment assignmentExpression = null;
-    label_5:
-    while (true) {
-      if (jj_2_1(2)) {
-        ;
-      } else {
-        break label_5;
-      }
-typeVariables = VariableDeclaratorId();
-      jj_consume_token(DDOTS);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case VETOR:{
-        jj_consume_token(VETOR);
+    typeVariables = VariableDeclaratorId();
+    jj_consume_token(DDOTS);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case VETOR:{
+      jj_consume_token(VETOR);
 line = token.beginLine; isArray = true;
-        jj_consume_token(LBRACKET);
+      jj_consume_token(LBRACKET);
+      jj_consume_token(INTEGER_LITERAL);
+lowerBound = new SPLiteralInt(token.beginLine, token.image);
+      jj_consume_token(DOUBLEDOT);
+      jj_consume_token(INTEGER_LITERAL);
+upperBound = new SPLiteralInt(token.beginLine, token.image);
+                                  dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                dimensionsBounds.add(dimensionBounds);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case COMMA:{
+        jj_consume_token(COMMA);
         jj_consume_token(INTEGER_LITERAL);
 lowerBound = new SPLiteralInt(token.beginLine, token.image);
         jj_consume_token(DOUBLEDOT);
         jj_consume_token(INTEGER_LITERAL);
 upperBound = new SPLiteralInt(token.beginLine, token.image);
-                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
-                                      dimensionsBounds.add(dimensionBounds);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case COMMA:{
-          jj_consume_token(COMMA);
-          jj_consume_token(INTEGER_LITERAL);
-lowerBound = new SPLiteralInt(token.beginLine, token.image);
-          jj_consume_token(DOUBLEDOT);
-          jj_consume_token(INTEGER_LITERAL);
-upperBound = new SPLiteralInt(token.beginLine, token.image);
-                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
-                                      dimensionsBounds.add(dimensionBounds);
-          break;
-          }
-        default:
-          jj_la1[5] = jj_gen;
-          ;
-        }
-        jj_consume_token(RBRACKET);
-        jj_consume_token(DE);
+                                  dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                dimensionsBounds.add(dimensionBounds);
         break;
         }
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[5] = jj_gen;
         ;
       }
+      jj_consume_token(RBRACKET);
+      jj_consume_token(DE);
+      break;
+      }
+    default:
+      jj_la1[6] = jj_gen;
+      ;
+    }
 type = Type();
 
-                if(isArray){
-                  type = new ArrayTypeName(type, dimensionsBounds.size());
-                  newArray = new SPNewArrayOp(line, type, dimensionsBounds, lowerBounds);
-                }
+          if(isArray){
+            type = new ArrayTypeName(type, dimensionsBounds.size());
+            newArray = new SPNewArrayOp(line, type, dimensionsBounds, lowerBounds);
+          }
 
-                for(SPVariableDeclarator variable : typeVariables){
-                  variable.setType(type);
-                  variables.add(variable);
+          for(SPVariableDeclarator variable : typeVariables){
+            variable.setType(type);
+            variables.add(variable);
 
-                  if(isArray){
-                    lhs = new SPVariable(variable.line(), variable.getName());
-                    assignmentExpression = new SPAssignOp(variable.line(), null, null);
-                    assignmentExpression.setLhs(lhs);
-                    assignmentExpression.setRhs(newArray);
-                    assignmentExpression.isStatementExpression = true;
-                    arrayInitializers.add(new SPStatementExpression(variable.line(), assignmentExpression));
-                  }
-                }
-    }
+            if(isArray){
+              lhs = new SPVariable(variable.line(), variable.getName());
+              assignmentExpression = new SPAssignOp(variable.line(), null, null);
+              assignmentExpression.setLhs(lhs);
+              assignmentExpression.setRhs(newArray);
+              assignmentExpression.isStatementExpression = true;
+              arrayInitializers.add(new SPStatementExpression(variable.line(), assignmentExpression));
+            }
+          }
 {if ("" != null) return variables;}
     throw new Error("Missing return statement in function");
   }
@@ -307,12 +304,16 @@ type = Type();
 SPVariableDeclarator variable = null;
     variable = Name();
 variables.add(variable);
-    label_6:
+    label_5:
     while (true) {
-      if (jj_2_2(2)) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case COMMA:{
         ;
-      } else {
-        break label_6;
+        break;
+        }
+      default:
+        jj_la1[7] = jj_gen;
+        break label_5;
       }
       jj_consume_token(COMMA);
       variable = Name();
@@ -351,14 +352,14 @@ type = Type.DECIMAL;
     case LITERAL:{
       jj_consume_token(LITERAL);
 type = Type.STRING;
-{if ("" != null) return type;}
       break;
       }
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+{if ("" != null) return type;}
     throw new Error("Missing return statement in function");
   }
 
@@ -367,54 +368,64 @@ type = Type.STRING;
 /*STATEMENTS*/
   static final public 
 SPStatement Statement() throws ParseException {SPStatement statement = null;
-    if (jj_2_3(2)) {
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case LPAREN:
+    case ASSIGN:
+    case PLUSASSIGN:
+    case MINUSASSIGN:
+    case STARASSIGN:
+    case SLASHASSIGN:
+    case ANDASSIGN:
+    case ORASSIGN:
+    case XORASSIGN:
+    case REMASSIGN:
+    case IDENTIFIER:{
       statement = StatementExpression();
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case ESCOLHA:{
-        statement = SwitchStatement();
-        break;
-        }
-      case SE:{
-        statement = IfStatement();
-        break;
-        }
-      case ENQUANTO:{
-        statement = WhileStatement();
-        break;
-        }
-      case REPITA:{
-        statement = DoStatement();
-        break;
-        }
-      case PARA:{
-        statement = ForStatement();
-        break;
-        }
-      case PARAR:{
-        statement = BreakStatement();
-        break;
-        }
-      case CONTINUAR:{
-        statement = ContinueStatement();
-        break;
-        }
-      case ESCREVA:
-      case ESCREVAL:{
-        statement = WriteStatement();
-        break;
-        }
-      case LEIA:{
-        statement = ReadStatement();
-{if ("" != null) return statement;}
-        break;
-        }
-      default:
-        jj_la1[8] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+      break;
       }
+    case ESCOLHA:{
+      statement = SwitchStatement();
+      break;
+      }
+    case SE:{
+      statement = IfStatement();
+      break;
+      }
+    case ENQUANTO:{
+      statement = WhileStatement();
+      break;
+      }
+    case REPITA:{
+      statement = DoStatement();
+      break;
+      }
+    case PARA:{
+      statement = ForStatement();
+      break;
+      }
+    case PARAR:{
+      statement = BreakStatement();
+      break;
+      }
+    case CONTINUAR:{
+      statement = ContinueStatement();
+      break;
+      }
+    case ESCREVA:
+    case ESCREVAL:{
+      statement = WriteStatement();
+      break;
+      }
+    case LEIA:{
+      statement = ReadStatement();
+      break;
+      }
+    default:
+      jj_la1[9] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
+{if ("" != null) return statement;}
     throw new Error("Missing return statement in function");
   }
 
@@ -422,7 +433,7 @@ SPStatement Statement() throws ParseException {SPStatement statement = null;
 int line;
 SPAssignment assignmentExpression;
 SPExpression rhs;
-    lhs = UnaryExpression();
+    lhs = PrimaryExpression();
 line = token.beginLine;
     assignmentExpression = AssignmentOperator();
     rhs = Expression();
@@ -471,14 +482,14 @@ assignExpression = new SPAssignOp(token.beginLine, null, null);
       }
     case ORASSIGN:{
       jj_consume_token(ORASSIGN);
-{if ("" != null) return assignExpression;}
       break;
       }
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+{if ("" != null) return assignExpression;}
     throw new Error("Missing return statement in function");
   }
 
@@ -491,7 +502,7 @@ assignExpression = new SPAssignOp(token.beginLine, null, null);
 SPExpression lhs;
 SPExpression rhs;
     lhs = ConditionalAndExpression();
-    label_7:
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case SC_OR:{
@@ -499,8 +510,8 @@ SPExpression rhs;
         break;
         }
       default:
-        jj_la1[10] = jj_gen;
-        break label_7;
+        jj_la1[11] = jj_gen;
+        break label_6;
       }
       jj_consume_token(SC_OR);
 rhs = ConditionalAndExpression();
@@ -514,7 +525,7 @@ rhs = ConditionalAndExpression();
   SPExpression lhs;
   SPExpression rhs;
     lhs = EqualityExpression();
-    label_8:
+    label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case SC_AND:{
@@ -522,8 +533,8 @@ rhs = ConditionalAndExpression();
         break;
         }
       default:
-        jj_la1[11] = jj_gen;
-        break label_8;
+        jj_la1[12] = jj_gen;
+        break label_7;
       }
       jj_consume_token(SC_AND);
 rhs = EqualityExpression();
@@ -538,7 +549,7 @@ rhs = EqualityExpression();
   SPExpression rhs;
   boolean equal = false;
     lhs = RelationalExpression();
-    label_9:
+    label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case EQ:
@@ -547,8 +558,8 @@ rhs = EqualityExpression();
         break;
         }
       default:
-        jj_la1[12] = jj_gen;
-        break label_9;
+        jj_la1[13] = jj_gen;
+        break label_8;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case EQ:{
@@ -562,7 +573,7 @@ equal = false;
         break;
         }
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -582,7 +593,7 @@ rhs = RelationalExpression();
   SPExpression rhs;
   int operation = 0;
     lhs = AdditiveExpression();
-    label_10:
+    label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case GT:
@@ -593,8 +604,8 @@ rhs = RelationalExpression();
         break;
         }
       default:
-        jj_la1[14] = jj_gen;
-        break label_10;
+        jj_la1[15] = jj_gen;
+        break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case LT:{
@@ -618,7 +629,7 @@ operation = 4;
         break;
         }
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -643,12 +654,12 @@ SPExpression lhs;
 SPExpression rhs;
 boolean sum = false;
     lhs = MultiplicativeExpression();
-    label_11:
+    label_10:
     while (true) {
-      if (jj_2_4(2)) {
+      if (jj_2_1(2)) {
         ;
       } else {
-        break label_11;
+        break label_10;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case PLUS:{
@@ -662,7 +673,7 @@ sum = false;
         break;
         }
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -681,7 +692,7 @@ rhs = MultiplicativeExpression();
   SPExpression lhs;
   SPExpression rhs;
     lhs = PowerExpression();
-    label_12:
+    label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case STAR:
@@ -692,8 +703,8 @@ rhs = MultiplicativeExpression();
         break;
         }
       default:
-        jj_la1[17] = jj_gen;
-        break label_12;
+        jj_la1[18] = jj_gen;
+        break label_11;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case STAR:{
@@ -717,7 +728,7 @@ lhs = new SPMultiplyOp(line, lhs, null);
         break;
         }
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -751,7 +762,7 @@ SPExpression rhs;
         break;
         }
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[20] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -759,10 +770,10 @@ expr = UnaryExpression();
       break;
       }
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
 expr = PostfixExpression();
-{if ("" != null) return expr;}
     }
+{if ("" != null) return expr;}
     throw new Error("Missing return statement in function");
   }
 
@@ -787,10 +798,10 @@ expr = Expression();
       break;
       }
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[22] = jj_gen;
 expr = Literal();
-{if ("" != null) return expr;}
     }
+{if ("" != null) return expr;}
     throw new Error("Missing return statement in function");
   }
 
@@ -798,31 +809,26 @@ expr = Literal();
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
   SPExpression indexExpression;
   int line = 0;
-    try {
-      jj_consume_token(LBRACKET);
+    jj_consume_token(LBRACKET);
 indexExpression = Expression();
     indexExpressions.add(indexExpression);
-      label_13:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case COMMA:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[22] = jj_gen;
-          break label_13;
+    label_12:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case COMMA:{
+        ;
+        break;
         }
-        jj_consume_token(COMMA);
+      default:
+        jj_la1[23] = jj_gen;
+        break label_12;
+      }
+      jj_consume_token(COMMA);
 indexExpression = Expression();
       indexExpressions.add(indexExpression);
-      }
-      jj_consume_token(RBRACKET);
-select = new SPArrayExpression(line, expr, indexExpressions);
-    {if ("" != null) return select;}
-    } catch (Exception e) {
-{if ("" != null) return expr;}
     }
+    jj_consume_token(RBRACKET);
+{if ("" != null) return new SPArrayExpression(line, expr, indexExpressions);}
     throw new Error("Missing return statement in function");
   }
 
@@ -849,7 +855,7 @@ expr = new SPLiteralString(token.beginLine, token.image);
       break;
       }
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -870,7 +876,7 @@ expr = new SPLiteralFalse(token.beginLine);
       break;
       }
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -881,7 +887,7 @@ expr = new SPLiteralFalse(token.beginLine);
   static final public SPStatement SwitchStatement() throws ParseException {
     jj_consume_token(ESCOLHA);
     Expression();
-    label_14:
+    label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case CASO:
@@ -890,11 +896,11 @@ expr = new SPLiteralFalse(token.beginLine);
         break;
         }
       default:
-        jj_la1[25] = jj_gen;
-        break label_14;
+        jj_la1[26] = jj_gen;
+        break label_13;
       }
       SwitchLabel();
-      label_15:
+      label_14:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case ESCREVA:
@@ -907,9 +913,8 @@ expr = new SPLiteralFalse(token.beginLine);
         case PARAR:
         case ESCOLHA:
         case CONTINUAR:
+        case LPAREN:
         case ASSIGN:
-        case PLUS:
-        case MINUS:
         case PLUSASSIGN:
         case MINUSASSIGN:
         case STARASSIGN:
@@ -917,13 +922,14 @@ expr = new SPLiteralFalse(token.beginLine);
         case ANDASSIGN:
         case ORASSIGN:
         case XORASSIGN:
-        case REMASSIGN:{
+        case REMASSIGN:
+        case IDENTIFIER:{
           ;
           break;
           }
         default:
-          jj_la1[26] = jj_gen;
-          break label_15;
+          jj_la1[27] = jj_gen;
+          break label_14;
         }
         Statement();
       }
@@ -947,7 +953,7 @@ expr = new SPLiteralFalse(token.beginLine);
       break;
       }
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -965,7 +971,7 @@ SPStatement elseBlock;
 line = token.beginLine;
     testExpr = Expression();
     jj_consume_token(ENTAO);
-    label_16:
+    label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case ESCREVA:
@@ -978,9 +984,8 @@ line = token.beginLine;
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -988,13 +993,14 @@ line = token.beginLine;
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
       default:
-        jj_la1[28] = jj_gen;
-        break label_16;
+        jj_la1[29] = jj_gen;
+        break label_15;
       }
       thenStatement = Statement();
 thenStatements.add(thenStatement);
@@ -1002,7 +1008,7 @@ thenStatements.add(thenStatement);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case SENAO:{
       jj_consume_token(SENAO);
-      label_17:
+      label_16:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case ESCREVA:
@@ -1015,9 +1021,8 @@ thenStatements.add(thenStatement);
         case PARAR:
         case ESCOLHA:
         case CONTINUAR:
+        case LPAREN:
         case ASSIGN:
-        case PLUS:
-        case MINUS:
         case PLUSASSIGN:
         case MINUSASSIGN:
         case STARASSIGN:
@@ -1025,13 +1030,14 @@ thenStatements.add(thenStatement);
         case ANDASSIGN:
         case ORASSIGN:
         case XORASSIGN:
-        case REMASSIGN:{
+        case REMASSIGN:
+        case IDENTIFIER:{
           ;
           break;
           }
         default:
-          jj_la1[29] = jj_gen;
-          break label_17;
+          jj_la1[30] = jj_gen;
+          break label_16;
         }
         elseStatement = Statement();
 elseStatements.add(elseStatement);
@@ -1039,7 +1045,7 @@ elseStatements.add(elseStatement);
       break;
       }
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[31] = jj_gen;
       ;
     }
     jj_consume_token(FIMSE);
@@ -1057,7 +1063,7 @@ SPExpression condition;
 line = token.beginLine;
   condition = Expression();
     jj_consume_token(FACA);
-    label_18:
+    label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case ESCREVA:
@@ -1070,9 +1076,8 @@ line = token.beginLine;
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -1080,13 +1085,14 @@ line = token.beginLine;
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
       default:
-        jj_la1[31] = jj_gen;
-        break label_18;
+        jj_la1[32] = jj_gen;
+        break label_17;
       }
       statement = Statement();
 body.add(statement);
@@ -1102,7 +1108,7 @@ ArrayList<SPStatement> block = new ArrayList<SPStatement>();
 int line;
     jj_consume_token(REPITA);
 line = token.beginLine;
-    label_19:
+    label_18:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case ESCREVA:
@@ -1115,9 +1121,8 @@ line = token.beginLine;
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -1125,13 +1130,14 @@ line = token.beginLine;
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
       default:
-        jj_la1[32] = jj_gen;
-        break label_19;
+        jj_la1[33] = jj_gen;
+        break label_18;
       }
       statement = Statement();
 block.add(statement);
@@ -1174,11 +1180,11 @@ pace = new SPLiteralInt(line, "1");
       break;
       }
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[34] = jj_gen;
       ;
     }
     jj_consume_token(FACA);
-    label_20:
+    label_19:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case ESCREVA:
@@ -1191,9 +1197,8 @@ pace = new SPLiteralInt(line, "1");
       case PARAR:
       case ESCOLHA:
       case CONTINUAR:
+      case LPAREN:
       case ASSIGN:
-      case PLUS:
-      case MINUS:
       case PLUSASSIGN:
       case MINUSASSIGN:
       case STARASSIGN:
@@ -1201,13 +1206,14 @@ pace = new SPLiteralInt(line, "1");
       case ANDASSIGN:
       case ORASSIGN:
       case XORASSIGN:
-      case REMASSIGN:{
+      case REMASSIGN:
+      case IDENTIFIER:{
         ;
         break;
         }
       default:
-        jj_la1[34] = jj_gen;
-        break label_20;
+        jj_la1[35] = jj_gen;
+        break label_19;
       }
       statement = Statement();
 body.add(statement);
@@ -1257,14 +1263,14 @@ line = token.beginLine; writeLine = true;
       break;
       }
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[36] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     jj_consume_token(LPAREN);
     expression = Expression();
 expressionList.add(expression);
-    label_21:
+    label_20:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case COMMA:{
@@ -1272,8 +1278,8 @@ expressionList.add(expression);
         break;
         }
       default:
-        jj_la1[36] = jj_gen;
-        break label_21;
+        jj_la1[37] = jj_gen;
+        break label_20;
       }
       jj_consume_token(COMMA);
       expression = Expression();
@@ -1294,7 +1300,7 @@ line = token.beginLine;
     jj_consume_token(IDENTIFIER);
 expression = new SPVariable(token.beginLine, token.image);
   expressionList.add(expression);
-    label_22:
+    label_21:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case COMMA:{
@@ -1302,8 +1308,8 @@ expression = new SPVariable(token.beginLine, token.image);
         break;
         }
       default:
-        jj_la1[37] = jj_gen;
-        break label_22;
+        jj_la1[38] = jj_gen;
+        break label_21;
       }
       jj_consume_token(COMMA);
       jj_consume_token(IDENTIFIER);
@@ -1323,162 +1329,26 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(0, xla); }
   }
 
-  static private boolean jj_2_2(int xla)
- {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_2(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(1, xla); }
-  }
-
-  static private boolean jj_2_3(int xla)
- {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_3(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(2, xla); }
-  }
-
-  static private boolean jj_2_4(int xla)
- {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_4(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(3, xla); }
-  }
-
-  static private boolean jj_3R_25()
- {
-    if (jj_3R_28()) return true;
-    if (jj_3R_29()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_24()
- {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_32()
- {
-    if (jj_scan_token(ASSIGN)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_29()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_32()) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(86)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(87)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(91)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(84)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(85)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(88)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(90)) {
-    jj_scanpos = xsp;
-    if (jj_3R_33()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_27()
- {
-    if (jj_scan_token(MINUS)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_26()
+  static private boolean jj_3R_22()
  {
     if (jj_scan_token(PLUS)) return true;
     return false;
   }
 
-  static private boolean jj_3_3()
- {
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
-    if (jj_scan_token(DDOTS)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_23()) jj_scanpos = xsp;
-    return false;
-  }
-
-  static private boolean jj_3_4()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_26()) {
+    if (jj_3R_22()) {
     jj_scanpos = xsp;
-    if (jj_3R_27()) return true;
+    if (jj_3R_23()) return true;
     }
-    return false;
-  }
-
-  static private boolean jj_3R_31()
- {
-    return false;
-  }
-
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_33()
- {
-    if (jj_scan_token(ORASSIGN)) return true;
     return false;
   }
 
   static private boolean jj_3R_23()
  {
-    if (jj_scan_token(VETOR)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_30()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(78)) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_28()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) return true;
-    }
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -1494,7 +1364,7 @@ expression = new SPVariable(token.beginLine, token.image);
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[38];
+  static final private int[] jj_la1 = new int[39];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1504,15 +1374,15 @@ expression = new SPVariable(token.beginLine, token.image);
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x0,0x8f000000,0x3000000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0x0,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x0,0x8f000000,0x3000000,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x800000,0x10000,0x4a12,0x0,0x4a12,0x40000000,0x0,0x2000,0x4a12,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x40000000,0x980000,0x0,0x500,0x4a12,0x500,0x4a12,0x4a12,0x0,0x4a12,0x4a12,0x40000,0x4a12,0x0,0x40000000,0x40000000,};
+      jj_la1_1 = new int[] {0x800000,0x10000,0x1004a12,0x0,0x1004a12,0x40000000,0x0,0x40000000,0x2000,0x1004a12,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x40000000,0x980000,0x0,0x500,0x1004a12,0x500,0x1004a12,0x1004a12,0x0,0x1004a12,0x1004a12,0x40000,0x1004a12,0x0,0x40000000,0x40000000,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0xff06004,0x0,0xff06004,0x0,0x0,0x0,0x0,0xff00004,0x200,0x400,0x60,0x60,0x198,0x198,0x6000,0xb8000,0xb8000,0x6000,0x6000,0x10000000,0x0,0x0,0x0,0x0,0xff06004,0x0,0xff06004,0xff06004,0x0,0xff06004,0xff06004,0x0,0xff06004,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x1ff00004,0x0,0x1ff00004,0x0,0x0,0x0,0x0,0x1ff00004,0xff00004,0x200,0x400,0x60,0x60,0x198,0x198,0x6000,0xb8000,0xb8000,0x6000,0x6000,0x10000000,0x0,0x0,0x0,0x0,0x1ff00004,0x0,0x1ff00004,0x1ff00004,0x0,0x1ff00004,0x1ff00004,0x0,0x1ff00004,0x0,0x0,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[4];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[1];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -1534,7 +1404,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1549,7 +1419,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1567,7 +1437,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1578,7 +1448,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1595,7 +1465,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1605,7 +1475,7 @@ expression = new SPVariable(token.beginLine, token.image);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1723,7 +1593,7 @@ expression = new SPVariable(token.beginLine, token.image);
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 38; i++) {
+    for (int i = 0; i < 39; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1765,7 +1635,7 @@ expression = new SPVariable(token.beginLine, token.image);
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 1; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1773,9 +1643,6 @@ expression = new SPVariable(token.beginLine, token.image);
           jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
           switch (i) {
             case 0: jj_3_1(); break;
-            case 1: jj_3_2(); break;
-            case 2: jj_3_3(); break;
-            case 3: jj_3_4(); break;
           }
         }
         p = p.next;

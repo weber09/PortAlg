@@ -33,8 +33,14 @@ class PortAlgParser{
       return;
     }
     try {
-      parser.Specification();
+       SPCompilationUnit ast = parser.Specification();
       System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Algol file parsed successfully.");
+      ast.preAnalyze();
+      ast.analyze(null);
+      String outputDir = "C:\\AlgolBytecodes";
+      CLEmitter clEmitter = new CLEmitter(true);
+      clEmitter.destinationDir(outputDir);
+      ast.codegen(clEmitter);
     } catch (ParseException e) {
       System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
 	  System.out.println(e.getMessage());
@@ -233,7 +239,6 @@ TOKEN :
 
  SPCompilationUnit Specification() :
 {
-  Token token = null;
   int line = 0;
   String fileName = "";
   ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
@@ -342,56 +347,54 @@ ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arra
   SPAssignment assignmentExpression = null;
 }
 {
-    (
-      LOOKAHEAD(2)
-      (
-        { typeVariables = VariableDeclaratorId(); } ":" 
-                [
-                  <VETOR> { line = token.beginLine; isArray = true; }
-                  <LBRACKET> 
-                  <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
-                  <DOUBLEDOT> 
-                  <INTEGER_LITERAL> {
-                                      upperBound = new SPLiteralInt(token.beginLine, token.image);
-                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
-                                      dimensionsBounds.add(dimensionBounds); 
-                                     }
-                  [ 
-                    <COMMA> 
-                    <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
-                    <DOUBLEDOT> 
-                    <INTEGER_LITERAL> {
-                                      upperBound = new SPLiteralInt(token.beginLine, token.image);
-                                       dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
-                                      dimensionsBounds.add(dimensionBounds); 
-                                     }
-                  ]
-                  <RBRACKET>
-                  <DE>
-                 ]
-               { 
-                type = Type();
-                
-                if(isArray){
-                  type = new ArrayTypeName(type, dimensionsBounds.size());
-                  newArray = new SPNewArrayOp(line, type, dimensionsBounds, lowerBounds);
-                }
-                
-                for(SPVariableDeclarator variable : typeVariables){
-                  variable.setType(type);
-                  variables.add(variable);
-                  
-                  if(isArray){
-                    lhs = new SPVariable(variable.line(), variable.getName());
-                    assignmentExpression = new SPAssignOp(variable.line(), null, null);
-                    assignmentExpression.setLhs(lhs);
-                    assignmentExpression.setRhs(newArray);
-                    assignmentExpression.isStatementExpression = true;
-                    arrayInitializers.add(new SPStatementExpression(variable.line(), assignmentExpression));
-                  }
-                }
-                 
-               }))*
+    
+          typeVariables = VariableDeclaratorId() <DDOTS> 
+          [
+            <VETOR> { line = token.beginLine; isArray = true; }
+            <LBRACKET> 
+            <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
+            <DOUBLEDOT> 
+            <INTEGER_LITERAL> {
+                                upperBound = new SPLiteralInt(token.beginLine, token.image);
+                                  dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                dimensionsBounds.add(dimensionBounds); 
+                                }
+            [ 
+              <COMMA> 
+              <INTEGER_LITERAL> { lowerBound = new SPLiteralInt(token.beginLine, token.image); }
+              <DOUBLEDOT> 
+              <INTEGER_LITERAL> {
+                                upperBound = new SPLiteralInt(token.beginLine, token.image);
+                                  dimensionBounds = new SPPlusOp(token.beginLine, new SPSubtractOp(token.beginLine, upperBound, lowerBound), new SPLiteralInt(token.beginLine, "1"));
+                                dimensionsBounds.add(dimensionBounds); 
+                                }
+            ]
+            <RBRACKET>
+            <DE>
+            ]
+          { 
+          type = Type();
+          
+          if(isArray){
+            type = new ArrayTypeName(type, dimensionsBounds.size());
+            newArray = new SPNewArrayOp(line, type, dimensionsBounds, lowerBounds);
+          }
+          
+          for(SPVariableDeclarator variable : typeVariables){
+            variable.setType(type);
+            variables.add(variable);
+            
+            if(isArray){
+              lhs = new SPVariable(variable.line(), variable.getName());
+              assignmentExpression = new SPAssignOp(variable.line(), null, null);
+              assignmentExpression.setLhs(lhs);
+              assignmentExpression.setRhs(newArray);
+              assignmentExpression.isStatementExpression = true;
+              arrayInitializers.add(new SPStatementExpression(variable.line(), assignmentExpression));
+            }
+          }
+          }
+     
      { return variables; }
 }
 
@@ -411,7 +414,7 @@ SPVariableDeclarator variable = null;
     { variables.add(variable); }
   
    (
-    LOOKAHEAD(2) <COMMA>
+      <COMMA>
       variable = Name()
       { variables.add(variable); } 
    )*
@@ -439,7 +442,7 @@ Type Type() :
 {
 Type type;
 }
-{
+{(
    <LOGICO>
    { type = Type.BOOLEAN; }
 |
@@ -450,7 +453,7 @@ Type type;
   { type = Type.DECIMAL; }
 |
   <LITERAL>
-  { type = Type.STRING; }
+  { type = Type.STRING; })
   
  {return type; }
 }
@@ -464,7 +467,7 @@ SPStatement Statement() :
 SPStatement statement = null;
 }
 {
- LOOKAHEAD(2)
+ (
  statement = StatementExpression()
 |
   statement = SwitchStatement()
@@ -483,7 +486,7 @@ SPStatement statement = null;
 |
   statement = WriteStatement()
 |
-  statement = ReadStatement()
+  statement = ReadStatement())
   
   {return statement; }
 }
@@ -497,7 +500,7 @@ SPExpression rhs;
 
 }
 {
-  lhs = UnaryExpression()
+  lhs = PrimaryExpression()
   { line = token.beginLine; }
   assignmentExpression = AssignmentOperator()
   rhs = Expression()
@@ -514,7 +517,7 @@ SPAssignment AssignmentOperator() :
   SPAssignment assignExpression = null;
 }
 {
-  <ASSIGN> 
+  (<ASSIGN> 
   {
     assignExpression = new SPAssignOp(token.beginLine, null, null);
     assignExpression.isStatementExpression = true;
@@ -526,7 +529,7 @@ SPAssignment AssignmentOperator() :
  | "-<-" 
  | "&<-" 
  | "^<-" 
- | "|<-"
+ | "|<-")
  {
   return assignExpression;
  }
@@ -707,13 +710,13 @@ SPExpression UnaryExpression() :
   SPExpression expr;
 }
 {
-  ( 
+  (( 
     "+" 
   | "-" //TODO: negar expressao
   ) 
   { expr = UnaryExpression(); }
 |
-  { expr = PostfixExpression(); }
+  { expr = PostfixExpression(); })
   
 {return expr; }
 }
@@ -736,12 +739,12 @@ SPExpression PrimaryExpression() :
 {
   SPExpression expr;
 }
-{
+{(
 	<IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
 |
 	<LPAREN> { expr = Expression(); } <RPAREN>
 |
-	{ expr = Literal(); }
+	{ expr = Literal(); })
   
 {return expr; }
 }
@@ -754,7 +757,6 @@ SPExpression Selector(SPExpression expr) :
   int line = 0;
 }
 {
-try{
   <LBRACKET>
   
   { 
@@ -771,14 +773,7 @@ try{
   
   <RBRACKET>
   
-  { 
-    select = new SPArrayExpression(line, expr, indexExpressions);
-    return select; 
-  }
-  }
-  catch(Exception e){
-  return expr;
-  }
+  { return new SPArrayExpression(line, expr, indexExpressions); }
 }
 
 SPExpression Literal() :
