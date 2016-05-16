@@ -418,7 +418,7 @@ SPStatement Statement() throws ParseException {SPStatement statement = null;
     throw new Error("Missing return statement in function");
   }
 
-  static final public void StatementExpression() throws ParseException {SPExpression lhs;
+  static final public SPStatement StatementExpression() throws ParseException {SPExpression lhs;
 int line;
 SPAssignment assignmentExpression;
 SPExpression rhs;
@@ -430,6 +430,7 @@ assignmentExpression.setLhs(lhs);
     assignmentExpression.setRhs(rhs);
 
     {if ("" != null) return new SPStatementExpression(line, assignmentExpression);}
+    throw new Error("Missing return statement in function");
   }
 
   static final public SPAssignment AssignmentOperator() throws ParseException {SPAssignment assignExpression;
@@ -870,7 +871,7 @@ expr = new SPLiteralFalse(token.beginLine);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void SwitchStatement() throws ParseException {
+  static final public SPStatement SwitchStatement() throws ParseException {
     jj_consume_token(ESCOLHA);
     Expression();
     label_14:
@@ -921,6 +922,8 @@ expr = new SPLiteralFalse(token.beginLine);
       }
     }
     jj_consume_token(FIMESCOLHA);
+{if ("" != null) return null;}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void SwitchLabel() throws ParseException {
@@ -1212,17 +1215,23 @@ controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void BreakStatement() throws ParseException {
+  static final public SPStatement BreakStatement() throws ParseException {
     jj_consume_token(PARAR);
+{if ("" != null) return null;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void ContinueStatement() throws ParseException {
+  static final public SPStatement ContinueStatement() throws ParseException {
     jj_consume_token(CONTINUAR);
+{if ("" != null) return null;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void ReturnStatement() throws ParseException {
+  static final public SPStatement ReturnStatement() throws ParseException {
     jj_consume_token(RETORNA);
     Expression();
+{if ("" != null) return null;}
+    throw new Error("Missing return statement in function");
   }
 
   static final public SPStatement WriteStatement() throws ParseException {int line;

@@ -488,7 +488,7 @@ SPStatement statement = null;
   {return statement; }
 }
 
-void StatementExpression() :
+SPStatement StatementExpression() :
 {
 SPExpression lhs;
 int line;
@@ -807,12 +807,13 @@ SPExpression BooleanLiteral() :
 { return expr; }
 }
 
-void SwitchStatement() :
+SPStatement SwitchStatement() :
 {}
 {
   <ESCOLHA> Expression()
     ( SwitchLabel() ( Statement() )* )*
    <FIMESCOLHA>
+   {return null;}
 }
 
 void SwitchLabel() :
@@ -949,22 +950,22 @@ SPStatement controlVariableIncStm;
    }
 }
 
-void BreakStatement() :
+SPStatement BreakStatement() :
 {}
 {
-  <PARAR>
+  <PARAR> { return null; }
 }
 
-void ContinueStatement() :
+SPStatement ContinueStatement() :
 {}
 {
-  <CONTINUAR>
+  <CONTINUAR> { return null; }
 }
 
-void ReturnStatement() :
+SPStatement ReturnStatement() :
 {}
 {
-  <RETORNA> Expression()
+  <RETORNA> Expression() { return null; }
 }
 
 SPStatement WriteStatement() :
