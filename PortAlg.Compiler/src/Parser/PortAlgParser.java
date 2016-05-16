@@ -345,7 +345,7 @@ type = Type.INT;
       }
     case DECIMAL:{
       jj_consume_token(DECIMAL);
-type = Type.DOUBLE;
+type = Type.DECIMAL;
       break;
       }
     case LITERAL:{

@@ -447,7 +447,7 @@ Type type;
   { type = Type.INT; }
 |
   <DECIMAL>
-  { type = Type.DOUBLE; }
+  { type = Type.DECIMAL; }
 |
   <LITERAL>
   { type = Type.STRING; }
