@@ -433,7 +433,7 @@ assignmentExpression.setLhs(lhs);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPAssignment AssignmentOperator() throws ParseException {SPAssignment assignExpression;
+  static final public SPAssignment AssignmentOperator() throws ParseException {SPAssignment assignExpression = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ASSIGN:{
       jj_consume_token(ASSIGN);
@@ -487,7 +487,7 @@ assignExpression = new SPAssignOp(token.beginLine, null, null);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression ConditionalOrExpression() throws ParseException {int line;
+  static final public SPExpression ConditionalOrExpression() throws ParseException {int line = 0;
 SPExpression lhs;
 SPExpression rhs;
     lhs = ConditionalAndExpression();
@@ -510,7 +510,7 @@ rhs = ConditionalAndExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression ConditionalAndExpression() throws ParseException {int line;
+  static final public SPExpression ConditionalAndExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
     lhs = EqualityExpression();
@@ -533,7 +533,7 @@ rhs = EqualityExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression EqualityExpression() throws ParseException {int line;
+  static final public SPExpression EqualityExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   boolean equal = false;
@@ -577,7 +577,7 @@ rhs = RelationalExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression RelationalExpression() throws ParseException {int line;
+  static final public SPExpression RelationalExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   int operation = 0;
@@ -630,7 +630,7 @@ rhs = AdditiveExpression();
                    break; }
         case 3 : { lhs = new SPLessEqualOp(line, lhs, rhs);
                    break; }
-        default : { lhs = new SPGreaterOp(line, lhs, rhs);
+        default : { lhs = new SPGreaterEqualOp(line, lhs, rhs);
                    break; }
       }
     }
@@ -638,7 +638,7 @@ rhs = AdditiveExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression AdditiveExpression() throws ParseException {int line;
+  static final public SPExpression AdditiveExpression() throws ParseException {int line = 0;
 SPExpression lhs;
 SPExpression rhs;
 boolean sum = false;
@@ -677,7 +677,7 @@ rhs = MultiplicativeExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression MultiplicativeExpression() throws ParseException {int line;
+  static final public SPExpression MultiplicativeExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
     lhs = PowerExpression();
@@ -722,7 +722,7 @@ lhs = new SPMultiplyOp(line, lhs, null);
         throw new ParseException();
       }
 rhs = PowerExpression();
-        lhs.setRhs(rhs);
+        ((SPBinaryExpression)lhs).setRhs(rhs);
     }
 {if ("" != null) return lhs;}
     throw new Error("Missing return statement in function");
@@ -797,6 +797,7 @@ expr = Literal();
   static final public SPExpression Selector(SPExpression expr) throws ParseException {SPExpression select;
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
   SPExpression indexExpression;
+  int line = 0;
     try {
       jj_consume_token(LBRACKET);
 indexExpression = Expression();
@@ -825,7 +826,7 @@ select = new SPArrayExpression(line, expr, indexExpressions);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression Literal() throws ParseException {SPexpression expr;
+  static final public SPExpression Literal() throws ParseException {SPExpression expr;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER_LITERAL:{
       jj_consume_token(INTEGER_LITERAL);
@@ -842,11 +843,17 @@ expr = new SPLiteralDecimal(token.beginLine, token.image);
 expr = new SPLiteralString(token.beginLine, token.image);
       break;
       }
+    case VERDADEIRO:
+    case FALSO:{
+      expr = BooleanLiteral();
+      break;
+      }
     default:
       jj_la1[23] = jj_gen;
-expr = BooleanLiteral();
-{if ("" != null) return expr;}
+      jj_consume_token(-1);
+      throw new ParseException();
     }
+{if ("" != null) return expr;}
     throw new Error("Missing return statement in function");
   }
 
@@ -860,7 +867,6 @@ expr = new SPLiteralTrue(token.beginLine);
     case FALSO:{
       jj_consume_token(FALSO);
 expr = new SPLiteralFalse(token.beginLine);
-{if ("" != null) return expr;}
       break;
       }
     default:
@@ -868,6 +874,7 @@ expr = new SPLiteralFalse(token.beginLine);
       jj_consume_token(-1);
       throw new ParseException();
     }
+{if ("" != null) return expr;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1038,7 +1045,7 @@ elseStatements.add(elseStatement);
     jj_consume_token(FIMSE);
 thenBlock = new SPBlock(line, thenStatements);
     elseBlock = new SPBlock(line, elseStatements);
-    {if ("" != null) return new SPIfStatement(line, test, thenBlock, elseBlock);}
+    {if ("" != null) return new SPIfStatement(line, testExpr, thenBlock, elseBlock);}
     throw new Error("Missing return statement in function");
   }
 
@@ -1141,7 +1148,7 @@ SPStatement statement;
 SPVariable controlVariable;
 SPExpression controlInitExpression;
 SPExpression controlEndExpression;
-SPStatement controlAssignment;
+SPExpression controlAssignment;
 SPStatement controlVariableInitialization;
 SPExpression pace;
 SPExpression controlVariableInc;
@@ -1154,7 +1161,7 @@ line = token.beginLine;
 controlVariable = new SPVariable( token.beginLine, token.image );
     jj_consume_token(DE);
     controlInitExpression = Expression();
-controlAssignment = new SPAssignOp(line, controlVariabel, controlInitExpression);
+controlAssignment = new SPAssignOp(line, controlVariable, controlInitExpression);
     controlAssignment.isStatementExpression = true;
     controlVariableInitialization = new SPStatementExpression(line, controlAssignment);
     jj_consume_token(ATE);
@@ -1206,11 +1213,11 @@ pace = new SPLiteralInt(line, "1");
 body.add(statement);
     }
     jj_consume_token(FIMPARA);
-controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
-   assignControlVariableInc = new SPAssignOp(line, controlVariabel, controlVariableInc);
+controlVariableInc = new SPPlusOp(line, controlVariable, pace);
+   assignControlVariableInc = new SPAssignOp(line, controlVariable, controlVariableInc);
    assignControlVariableInc.isStatementExpression = true;
    controlVariableIncStm = new SPStatementExpression(line, assignControlVariableInc);
-   condition = new SPGreaterThanOp(line, controlVariabel, controlLimit);
+   condition = new SPGreaterThanOp(line, controlVariable, controlEndExpression);
    {if ("" != null) return new SPForStatement(line, controlVariableInitialization, controlVariableIncStm, condition, new SPBlock(line, body));}
     throw new Error("Missing return statement in function");
   }
@@ -1497,7 +1504,7 @@ expression = new SPVariable(token.beginLine, token.image);
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x0,0x8f000000,0x3000000,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x8f000000,0x4000,0x8f000000,0x0,0x100000,0xe0000,0x8f000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc00000,0xc00000,0x0,0x8f000000,0x0,0x8f000000,0x8f000000,0x40000000,0x8f000000,0x8f000000,0x0,0x8f000000,0x3000000,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x800000,0x10000,0x4a12,0x0,0x4a12,0x40000000,0x0,0x2000,0x4a12,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x40000000,0x980000,0x0,0x500,0x4a12,0x500,0x4a12,0x4a12,0x0,0x4a12,0x4a12,0x40000,0x4a12,0x0,0x40000000,0x40000000,};

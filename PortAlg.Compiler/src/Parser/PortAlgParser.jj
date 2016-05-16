@@ -511,7 +511,7 @@ SPExpression rhs;
 
 SPAssignment AssignmentOperator() :
 {
-  SPAssignment assignExpression;
+  SPAssignment assignExpression = null;
 }
 {
   <ASSIGN> 
@@ -540,7 +540,7 @@ SPExpression Expression() :
 
 SPExpression ConditionalOrExpression() :
 {
-int line;
+int line = 0;
 SPExpression lhs;
 SPExpression rhs;
 }
@@ -559,7 +559,7 @@ SPExpression rhs;
 
 SPExpression ConditionalAndExpression() :
 {
-  int line;
+  int line = 0;
   SPExpression lhs;
   SPExpression rhs;
 }
@@ -577,7 +577,7 @@ SPExpression ConditionalAndExpression() :
 
 SPExpression EqualityExpression() :
 {
-  int line;
+  int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   boolean equal = false;
@@ -603,7 +603,7 @@ SPExpression EqualityExpression() :
 
 SPExpression RelationalExpression() :
 {
-  int line;
+  int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   int operation = 0;
@@ -625,7 +625,7 @@ SPExpression RelationalExpression() :
                    break; }
         case 3 : { lhs = new SPLessEqualOp(line, lhs, rhs);
                    break; }
-        default : { lhs = new SPGreaterOp(line, lhs, rhs);
+        default : { lhs = new SPGreaterEqualOp(line, lhs, rhs);
                    break; }
       }
      }
@@ -636,7 +636,7 @@ SPExpression RelationalExpression() :
 
 SPExpression AdditiveExpression() :
 {
-int line;
+int line = 0;
 SPExpression lhs;
 SPExpression rhs;
 boolean sum = false;
@@ -662,7 +662,7 @@ boolean sum = false;
 
 SPExpression MultiplicativeExpression() :
 {
-  int line;
+  int line = 0;
   SPExpression lhs;
   SPExpression rhs;
 }
@@ -676,7 +676,7 @@ SPExpression MultiplicativeExpression() :
       ) 
       { 
         rhs = PowerExpression(); 
-        lhs.setRhs(rhs);
+        ((SPBinaryExpression)lhs).setRhs(rhs);
       } 
     )*
     
@@ -751,6 +751,7 @@ SPExpression Selector(SPExpression expr) :
   SPExpression select;
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
   SPExpression indexExpression;
+  int line = 0;
 }
 {
 try{
@@ -782,16 +783,17 @@ try{
 
 SPExpression Literal() :
 {
-  SPexpression expr;
+  SPExpression expr;
 }
 {
+(
   <INTEGER_LITERAL> { expr = new SPLiteralInt(token.beginLine, token.image); }
 |
   <FLOATING_POINT_LITERAL> { expr = new SPLiteralDecimal(token.beginLine, token.image); }
 |
   <STRING_LITERAL> { expr = new SPLiteralString(token.beginLine, token.image); }
 |
-  { expr = BooleanLiteral(); }
+  expr = BooleanLiteral())
   
  {return expr; }
 }
@@ -800,10 +802,10 @@ SPExpression BooleanLiteral() :
 {
   SPExpression expr;
 }
-{
+{(
   <VERDADEIRO> { expr = new SPLiteralTrue(token.beginLine); }
 |
-  <FALSO> { expr = new SPLiteralFalse(token.beginLine); }
+  <FALSO> { expr = new SPLiteralFalse(token.beginLine); })
 { return expr; }
 }
 
@@ -859,7 +861,7 @@ SPStatement elseBlock;
   {
     thenBlock = new SPBlock(line, thenStatements);
     elseBlock = new SPBlock(line, elseStatements);
-    return new SPIfStatement(line, test, thenBlock, elseBlock);
+    return new SPIfStatement(line, testExpr, thenBlock, elseBlock);
    }
 }
 
@@ -911,7 +913,7 @@ SPStatement statement;
 SPVariable controlVariable;
 SPExpression controlInitExpression;
 SPExpression controlEndExpression;
-SPStatement controlAssignment;
+SPExpression controlAssignment;
 SPStatement controlVariableInitialization;
 SPExpression pace;
 SPExpression controlVariableInc;
@@ -925,7 +927,7 @@ SPStatement controlVariableIncStm;
   <DE> 
   controlInitExpression = Expression() 
   {
-    controlAssignment = new SPAssignOp(line, controlVariabel, controlInitExpression);
+    controlAssignment = new SPAssignOp(line, controlVariable, controlInitExpression);
     controlAssignment.isStatementExpression = true;
     controlVariableInitialization = new SPStatementExpression(line, controlAssignment);
   }
@@ -941,11 +943,11 @@ SPStatement controlVariableIncStm;
   {body.add(statement);})*
    <FIMPARA>
    {
-   controlVariableInc = new SPPlusOp(line, controlVariabel, pace);
-   assignControlVariableInc = new SPAssignOp(line, controlVariabel, controlVariableInc);
+   controlVariableInc = new SPPlusOp(line, controlVariable, pace);
+   assignControlVariableInc = new SPAssignOp(line, controlVariable, controlVariableInc);
    assignControlVariableInc.isStatementExpression = true;
    controlVariableIncStm = new SPStatementExpression(line, assignControlVariableInc);
-   condition = new SPGreaterThanOp(line, controlVariabel, controlLimit);
+   condition = new SPGreaterThanOp(line, controlVariable, controlEndExpression);
    return new SPForStatement(line, controlVariableInitialization, controlVariableIncStm, condition, new SPBlock(line, body));
    }
 }
