@@ -38,7 +38,7 @@ public class PortAlgService {
             if(compiler.errorHasOccurred()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Erros semânticos ocorreram:\n");
-                for(SemanticError error : PortAlgParser.getSemanticErrors()){
+                for(SemanticError error : compiler.getSemanticErrors()){
                     sb.append(error.toString() + "\n");
                 }
                 returnMessage = sb.toString();
@@ -47,10 +47,10 @@ public class PortAlgService {
             return Response.ok(returnMessage).header("Access-Control-Allow-Origin", "*").build();
         }
         catch(Exception ex){
-            return Response.ok(ex.toString()).header("Access-Control-Allow-Origin", "*").build();
+            return Response.ok(ex.getMessage() + "\n" + ex.getStackTrace()).header("Access-Control-Allow-Origin", "*").build();
         }
         catch(Error er){
-            return Response.ok(er.toString()).header("Access-Control-Allow-Origin", "*").build();
+            return Response.ok(er.getMessage() + "\n" + er.getStackTrace()).header("Access-Control-Allow-Origin", "*").build();
         }
     }
 }
