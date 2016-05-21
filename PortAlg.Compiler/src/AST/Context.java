@@ -9,7 +9,13 @@ package AST;
         import java.util.HashMap;
         import java.util.Set;
 
-class Context {
+public class Context {
+
+    public ArrayList<SemanticError> semanticErrors;
+
+    public ArrayList<SemanticError> getSemanticErrors(){
+        return semanticErrors;
+    }
 
     protected Context surroundingContext;
 
@@ -89,8 +95,6 @@ class Context {
 }
 
 class CompilationUnitContext extends Context {
-
-    public ArrayList<SemanticError> semanticErrors;
 
     public CompilationUnitContext() {
         super(null, null, null);
