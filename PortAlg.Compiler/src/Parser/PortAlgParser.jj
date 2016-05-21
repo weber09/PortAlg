@@ -324,10 +324,22 @@ void Function() :
 /*VARIABLES DECLARATION BLOCK*/
 
 ArrayList<SPVariableDeclarator> VariableInitializer(ArrayList<SPStatement> arrayInitializers):
-{}
 {
-	"var" 
-	{ return VariableDeclarations(arrayInitializers); }
+  ArrayList<SPVariableDeclarator> arrayDeclarator = new ArrayList<SPVariableDeclarator>();
+  ArrayList<SPVariableDeclarator> variables =  new ArrayList<SPVariableDeclarator>();
+}
+{
+	<VAR>
+  (
+    variables = VariableDeclarations(arrayInitializers)
+    {
+      for(SPVariableDeclarator variable : variables){
+        arrayDeclarator.add(variable);
+      }
+    }
+  )*
+  
+	{ return arrayDeclarator; }
 }
 
 ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arrayInitializers) :
@@ -399,12 +411,6 @@ ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arra
 }
 
 ArrayList<SPVariableDeclarator> VariableDeclaratorId() :
-{}
-{
-  { return NameList(); }
-}
-
-ArrayList<SPVariableDeclarator> NameList() :
 {
 ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
 SPVariableDeclarator variable = null;
@@ -710,40 +716,32 @@ SPExpression UnaryExpression() :
   SPExpression expr;
 }
 {
-  (( 
-    "+" 
-  | "-" //TODO: negar expressao
-  ) 
-  { expr = UnaryExpression(); }
-|
-  { expr = PostfixExpression(); })
+  [LOOKAHEAD(2)("+" 
+  | "-")] //TODO: negar expressao
   
+  { expr = PrimaryExpression(); }  
 {return expr; }
 }
 
-SPExpression PostfixExpression() : 
-{
-  SPExpression expr;
-}
-{
-  expr = PrimaryExpression()
-  
-  {
-    expr = Selector(expr);
-   }
-  
-  {return expr; }
-}
+//SPExpression PostfixExpression() : 
+//{
+//  SPExpression expr;
+//}
+//{
+//  expr = PrimaryExpression()
+//  { expr = Selector(expr); }
+//  {return expr; }
+//}
 
 SPExpression PrimaryExpression() :
 {
   SPExpression expr;
 }
 {(
-	<IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
-|
-	<LPAREN> { expr = Expression(); } <RPAREN>
-|
+	 <IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
+  |
+   <LPAREN> { expr = Expression(); } <RPAREN>
+  |
 	{ expr = Literal(); })
   
 {return expr; }
@@ -751,28 +749,26 @@ SPExpression PrimaryExpression() :
 
 SPExpression Selector(SPExpression expr) :
 {
-  SPExpression select;
+  SPExpression select = null;
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
-  SPExpression indexExpression;
+  SPExpression indexExpression = null;
   int line = 0;
 }
 {
+(
   <LBRACKET>
-  
   { 
-    indexExpression = Expression();
+    indexExpression = AdditiveExpression();
     indexExpressions.add(indexExpression);
   }
-  
   ( <COMMA>
     { 
-      indexExpression = Expression();
+      indexExpression = AdditiveExpression();
       indexExpressions.add(indexExpression);
      }
   )*
-  
   <RBRACKET>
-  
+  )
   { return new SPArrayExpression(line, expr, indexExpressions); }
 }
 
