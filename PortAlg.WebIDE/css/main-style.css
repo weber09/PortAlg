@@ -1,0 +1,67 @@
+body {
+    background-color: #111111;
+    font-family: Tahoma, Geneva, sans-serif;
+    color: #b3b3b3;
+}
+
+html, body, .main{
+    height: 99%;
+}
+
+.main{
+    width: 60%;
+    margin-left: 20%;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: inherit;
+    text-align: center;
+    text-shadow: #abcdef;
+    height: 12%;
+    margin: 0 auto;
+}
+
+.content{
+    position: fixed;
+    top: 12%;
+    bottom: 5%;
+    width: inherit;
+    overflow: auto;
+}
+
+#editorToolbar{
+    margin-left:10px;
+    margin-top:5px;
+     margin-bottom: 5px;
+}
+
+.consolePanel{
+    margin-top: 10px;
+    height: 15%;
+    width: 99%;
+}
+
+#compilerConsole{
+    background-color: #202020;
+    width: 99%;
+    color: #fff;
+    font-family: Tahoma, Geneva, sans-serif;
+    height: 85%;
+    resize: none;
+}
+
+.editorPanel{
+    width: 99%;
+    height: 75%;
+}
+
+.footer{
+    position: fixed;
+    bottom: 0;
+    height: 5%;
+    width: inherit;
+    margin: 0 auto;
+}
+

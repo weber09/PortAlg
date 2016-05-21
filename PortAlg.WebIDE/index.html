@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html data-ng-app="app">
+    <head>
+        <title>PortAlg</title>
+        
+        <script src="ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script src="js/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/main-style.css">
+        
+    </head>
+    <body>
+        <div class="main" data-ng-controller="editor">
+            
+            <div class="header">
+                <h1>Portal de Algoritmos UCS</h1>
+            </div>
+            
+            <div class="content" data-ng-controller="compileController">
+                <div id="editorToolbar" >
+                    <button data-ng-click="callCompiler()">Compile!</button>
+                </div>
+                <div class="editorPanel"   >
+                    <div class="editor" id="aceEditor" data-ace="" data-ng-model="content"></div>
+                </div>
+                <div class="consolePanel">
+                    <label>Console log:</label>
+                    <br/>
+                    <textarea id="compilerConsole">{{messagerest}}</textarea>
+                </div>
+            <div>
+                
+            <div class="footer">
+                
+            </div>
+        </div>
+    </body>
+</html>
