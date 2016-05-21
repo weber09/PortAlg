@@ -3,11 +3,13 @@
 package Parser;
 
 import AST.*;
-import java.util.UUID;
+
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
-class PortAlgParser implements PortAlgParserConstants {
+public class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
     PortAlgParser parser;
         int version = 0;
@@ -44,6 +46,104 @@ class PortAlgParser implements PortAlgParserConstants {
       System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
           System.out.println(e.getMessage());
     }
+  }
+
+  private static SimpleCharStream charStream;
+
+    private static PortAlgParserTokenManager scanner;
+
+    private static PortAlgParser parser;
+
+    private static boolean errorHasOcurred;
+    public boolean errorHasOccurred(){
+        return errorHasOcurred;
+    }
+
+    private static ArrayList<SemanticError> semanticErrors;
+    public static ArrayList<SemanticError> getSemanticErrors(){
+        return semanticErrors;
+    }
+
+  public void compile(byte[] codeBytes) throws ParseException {
+    semanticErrors = new ArrayList<SemanticError>();
+
+        if (charStream == null)
+            charStream = new SimpleCharStream(new ByteArrayInputStream(codeBytes));
+        else
+            charStream.ReInit(new ByteArrayInputStream(codeBytes));
+
+        if (scanner == null)
+            scanner = new PortAlgParserTokenManager(charStream);
+        else
+            scanner.ReInit(charStream);
+
+        errorHasOcurred = false;
+
+        SPCompilationUnit ast;
+        if (parser == null)
+            parser = new PortAlgParser(scanner);
+        else
+            parser.ReInit(scanner);
+
+        try {
+            ast = parser.Specification();
+        } catch (ParseException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+
+        errorHasOcurred |= ast.errorHasOccurred();
+        semanticErrors.clear();
+        if(ast.getContext() != null) {
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
+        }
+
+        try {
+            ast.preAnalyze();
+        }
+        catch(Exception exc)
+        {
+            System.out.println(exc.getMessage());
+            throw exc;
+        }
+        errorHasOcurred |= ast.errorHasOccurred();
+        semanticErrors.clear();
+        if(ast.getContext() != null) {
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
+        }
+
+        try {
+            ast.analyze(null);
+        }
+        catch(Exception exc1) {
+            System.out.println(exc1.getMessage());
+            throw exc1;
+        }
+
+        errorHasOcurred |= ast.errorHasOccurred();
+        semanticErrors.clear();
+        if(ast.getContext() != null){
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
+        }
+
+        String outputDir = "C:\u005c\u005cAlgolBytecodes";
+
+        try {
+            CLEmitter clEmitter = new CLEmitter(true);
+            clEmitter.destinationDir(outputDir);
+            ast.codegen(clEmitter);
+
+        }
+        catch(Exception exc2){
+            System.out.println(exc2.getMessage());
+            throw exc2;
+        }
+
+        errorHasOcurred |= ast.errorHasOccurred();
+        semanticErrors.clear();
+        if(ast.getContext() != null) {
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
+        }
   }
 
 /*PROGRAM SPECIFICATION*/
