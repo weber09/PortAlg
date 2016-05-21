@@ -3,90 +3,39 @@
 package Parser;
 
 import AST.*;
-
 import java.io.ByteArrayInputStream;
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
-    PortAlgParser parser;
-        int version = 0;
-        int rebuild = 0;
-        int commit = 10;
-    if (args.length == 0) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from standard input . . .");
-      parser = new PortAlgParser(System.in);
-    } else if (args.length == 1) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from file " + args[0] + " . . .");
-      try {
-        parser = new PortAlgParser(new java.io.FileInputStream(args[0]));
-      } catch (java.io.FileNotFoundException e) {
-        System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  File " + args[0] + " not found.");
-        return;
-      }
-    } else {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Usage is one of:");
-      System.out.println("         java PortAlgParser < inputfile");
-      System.out.println("OR");
-      System.out.println("         java PortAlgParser inputfile");
-      return;
-    }
-    try {
-       SPCompilationUnit ast = parser.Specification();
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Algol file parsed successfully.");
-      ast.preAnalyze();
-      ast.analyze(null);
-      String outputDir = "C:\u005c\u005cAlgolBytecodes";
-      CLEmitter clEmitter = new CLEmitter(true);
-      clEmitter.destinationDir(outputDir);
-      ast.codegen(clEmitter);
-    } catch (ParseException e) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
-          System.out.println(e.getMessage());
-    }
+
   }
 
-  private static SimpleCharStream charStream;
-
-    private static PortAlgParserTokenManager scanner;
-
-    private static PortAlgParser parser;
-
-    private static boolean errorHasOcurred;
+    private boolean errorHasOcurred;
     public boolean errorHasOccurred(){
         return errorHasOcurred;
     }
 
-    private static ArrayList<SemanticError> semanticErrors;
-    public static ArrayList<SemanticError> getSemanticErrors(){
+    private ArrayList<SemanticError> semanticErrors;
+    public ArrayList<SemanticError> getSemanticErrors(){
         return semanticErrors;
     }
 
   public void compile(byte[] codeBytes) throws ParseException {
     semanticErrors = new ArrayList<SemanticError>();
 
-        if (charStream == null)
-            charStream = new SimpleCharStream(new ByteArrayInputStream(codeBytes));
-        else
-            charStream.ReInit(new ByteArrayInputStream(codeBytes));
+            SimpleCharStream charStream = new SimpleCharStream(new ByteArrayInputStream(codeBytes));
 
-        if (scanner == null)
-            scanner = new PortAlgParserTokenManager(charStream);
-        else
-            scanner.ReInit(charStream);
+            PortAlgParserTokenManager scanner = new PortAlgParserTokenManager(charStream);
 
         errorHasOcurred = false;
 
+        ReInit(scanner);
         SPCompilationUnit ast;
-        if (parser == null)
-            parser = new PortAlgParser(scanner);
-        else
-            parser.ReInit(scanner);
-
         try {
-            ast = parser.Specification();
+            ast = Specification();
         } catch (ParseException exception) {
             System.out.println(exception.getMessage());
             throw exception;
@@ -147,7 +96,7 @@ public class PortAlgParser implements PortAlgParserConstants {
   }
 
 /*PROGRAM SPECIFICATION*/
-  static final public 
+  final public 
  SPCompilationUnit Specification() throws ParseException {int line = 0;
   String fileName = "";
   ArrayList<SPStatement> arrayInitializers = new ArrayList<SPStatement>();
@@ -263,7 +212,7 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
     throw new Error("Missing return statement in function");
   }
 
-  static final public void Function() throws ParseException {
+  final public void Function() throws ParseException {
     jj_consume_token(FUNCAO);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case VAR:{
@@ -313,7 +262,7 @@ methodArgsType = Type.typeFor(methodArgs.getClass());
 /*PROGRAM SPECIFICATION*/
 
 /*VARIABLES DECLARATION BLOCK*/
-  static final public 
+  final public 
 ArrayList<SPVariableDeclarator> VariableInitializer(ArrayList<SPStatement> arrayInitializers) throws ParseException {ArrayList<SPVariableDeclarator> arrayDeclarator = new ArrayList<SPVariableDeclarator>();
   ArrayList<SPVariableDeclarator> variables =  new ArrayList<SPVariableDeclarator>();
     jj_consume_token(VAR);
@@ -337,7 +286,7 @@ for(SPVariableDeclarator variable : variables){
     throw new Error("Missing return statement in function");
   }
 
-  static final public ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arrayInitializers) throws ParseException {ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
+  final public ArrayList<SPVariableDeclarator> VariableDeclarations(ArrayList<SPStatement> arrayInitializers) throws ParseException {ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
   ArrayList<SPVariableDeclarator> typeVariables = null;
   Type type = null;
   ArrayList<SPExpression> dimensionsBounds = new ArrayList<SPExpression>();
@@ -412,7 +361,7 @@ type = Type();
     throw new Error("Missing return statement in function");
   }
 
-  static final public ArrayList<SPVariableDeclarator> VariableDeclaratorId() throws ParseException {ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
+  final public ArrayList<SPVariableDeclarator> VariableDeclaratorId() throws ParseException {ArrayList<SPVariableDeclarator> variables = new ArrayList<SPVariableDeclarator>();
 SPVariableDeclarator variable = null;
     variable = Name();
 variables.add(variable);
@@ -435,7 +384,7 @@ variables.add(variable);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPVariableDeclarator Name() throws ParseException {int line = 0;
+  final public SPVariableDeclarator Name() throws ParseException {int line = 0;
 String name = "";
     jj_consume_token(IDENTIFIER);
 line = token.beginLine;
@@ -444,7 +393,7 @@ line = token.beginLine;
     throw new Error("Missing return statement in function");
   }
 
-  static final public Type Type() throws ParseException {Type type;
+  final public Type Type() throws ParseException {Type type;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LOGICO:{
       jj_consume_token(LOGICO);
@@ -478,7 +427,7 @@ type = Type.STRING;
 /*VARIABLES DECLARATION BLOCK*/
 
 /*STATEMENTS*/
-  static final public 
+  final public 
 SPStatement Statement() throws ParseException {SPStatement statement = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LPAREN:
@@ -541,7 +490,7 @@ SPStatement Statement() throws ParseException {SPStatement statement = null;
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement StatementExpression() throws ParseException {SPExpression lhs;
+  final public SPStatement StatementExpression() throws ParseException {SPExpression lhs;
 int line;
 SPAssignment assignmentExpression;
 SPExpression rhs;
@@ -556,7 +505,7 @@ assignmentExpression.setLhs(lhs);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPAssignment AssignmentOperator() throws ParseException {SPAssignment assignExpression = null;
+  final public SPAssignment AssignmentOperator() throws ParseException {SPAssignment assignExpression = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ASSIGN:{
       jj_consume_token(ASSIGN);
@@ -605,12 +554,12 @@ assignExpression = new SPAssignOp(token.beginLine, null, null);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression Expression() throws ParseException {
+  final public SPExpression Expression() throws ParseException {
 {if ("" != null) return ConditionalOrExpression();}
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression ConditionalOrExpression() throws ParseException {int line = 0;
+  final public SPExpression ConditionalOrExpression() throws ParseException {int line = 0;
 SPExpression lhs;
 SPExpression rhs;
     lhs = ConditionalAndExpression();
@@ -633,7 +582,7 @@ rhs = ConditionalAndExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression ConditionalAndExpression() throws ParseException {int line = 0;
+  final public SPExpression ConditionalAndExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
     lhs = EqualityExpression();
@@ -656,7 +605,7 @@ rhs = EqualityExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression EqualityExpression() throws ParseException {int line = 0;
+  final public SPExpression EqualityExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   boolean equal = false;
@@ -700,7 +649,7 @@ rhs = RelationalExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression RelationalExpression() throws ParseException {int line = 0;
+  final public SPExpression RelationalExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
   int operation = 0;
@@ -761,7 +710,7 @@ rhs = AdditiveExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression AdditiveExpression() throws ParseException {int line = 0;
+  final public SPExpression AdditiveExpression() throws ParseException {int line = 0;
 SPExpression lhs;
 SPExpression rhs;
 boolean sum = false;
@@ -800,7 +749,7 @@ rhs = MultiplicativeExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression MultiplicativeExpression() throws ParseException {int line = 0;
+  final public SPExpression MultiplicativeExpression() throws ParseException {int line = 0;
   SPExpression lhs;
   SPExpression rhs;
     lhs = PowerExpression();
@@ -851,7 +800,7 @@ rhs = PowerExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression PowerExpression() throws ParseException {int line;
+  final public SPExpression PowerExpression() throws ParseException {int line;
 SPExpression lhs;
 SPExpression rhs;
     lhs = UnaryExpression();
@@ -859,7 +808,7 @@ SPExpression rhs;
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression UnaryExpression() throws ParseException {int line;
+  final public SPExpression UnaryExpression() throws ParseException {int line;
   SPExpression expr;
     if (jj_2_2(2)) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -893,7 +842,7 @@ expr = PrimaryExpression();
 //  { expr = Selector(expr); }
 //  {return expr; }
 //}
-  static final public 
+  final public 
 SPExpression PrimaryExpression() throws ParseException {SPExpression expr;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IDENTIFIER:{
@@ -915,7 +864,7 @@ expr = Literal();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression Selector(SPExpression expr) throws ParseException {SPExpression select = null;
+  final public SPExpression Selector(SPExpression expr) throws ParseException {SPExpression select = null;
   ArrayList<SPExpression> indexExpressions = new ArrayList<SPExpression>();
   SPExpression indexExpression = null;
   int line = 0;
@@ -942,7 +891,7 @@ indexExpression = AdditiveExpression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression Literal() throws ParseException {SPExpression expr;
+  final public SPExpression Literal() throws ParseException {SPExpression expr;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER_LITERAL:{
       jj_consume_token(INTEGER_LITERAL);
@@ -973,7 +922,7 @@ expr = new SPLiteralString(token.beginLine, token.image);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPExpression BooleanLiteral() throws ParseException {SPExpression expr;
+  final public SPExpression BooleanLiteral() throws ParseException {SPExpression expr;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case VERDADEIRO:{
       jj_consume_token(VERDADEIRO);
@@ -994,7 +943,7 @@ expr = new SPLiteralFalse(token.beginLine);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement SwitchStatement() throws ParseException {
+  final public SPStatement SwitchStatement() throws ParseException {
     jj_consume_token(ESCOLHA);
     Expression();
     label_14:
@@ -1049,7 +998,7 @@ expr = new SPLiteralFalse(token.beginLine);
     throw new Error("Missing return statement in function");
   }
 
-  static final public void SwitchLabel() throws ParseException {
+  final public void SwitchLabel() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case CASO:{
       jj_consume_token(CASO);
@@ -1069,7 +1018,7 @@ expr = new SPLiteralFalse(token.beginLine);
     }
   }
 
-  static final public SPStatement IfStatement() throws ParseException {int line;
+  final public SPStatement IfStatement() throws ParseException {int line;
 SPExpression testExpr;
 ArrayList<SPStatement> thenStatements = new ArrayList<SPStatement>();
 SPStatement thenStatement;
@@ -1165,7 +1114,7 @@ thenBlock = new SPBlock(line, thenStatements);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement WhileStatement() throws ParseException {SPStatement statement;
+  final public SPStatement WhileStatement() throws ParseException {SPStatement statement;
 ArrayList<SPStatement> body = new ArrayList<SPStatement>();
 int line;
 SPExpression condition;
@@ -1212,7 +1161,7 @@ body.add(statement);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement DoStatement() throws ParseException {SPExpression condition;
+  final public SPStatement DoStatement() throws ParseException {SPExpression condition;
 SPStatement statement;
 ArrayList<SPStatement> block = new ArrayList<SPStatement>();
 int line;
@@ -1258,7 +1207,7 @@ condition = Expression();
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement ForStatement() throws ParseException {int line;
+  final public SPStatement ForStatement() throws ParseException {int line;
 ArrayList<SPStatement> body = new ArrayList<SPStatement>();
 SPStatement statement;
 SPVariable controlVariable;
@@ -1338,26 +1287,26 @@ controlVariableInc = new SPPlusOp(line, controlVariable, pace);
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement BreakStatement() throws ParseException {
+  final public SPStatement BreakStatement() throws ParseException {
     jj_consume_token(PARAR);
 {if ("" != null) return null;}
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement ContinueStatement() throws ParseException {
+  final public SPStatement ContinueStatement() throws ParseException {
     jj_consume_token(CONTINUAR);
 {if ("" != null) return null;}
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement ReturnStatement() throws ParseException {
+  final public SPStatement ReturnStatement() throws ParseException {
     jj_consume_token(RETORNA);
     Expression();
 {if ("" != null) return null;}
     throw new Error("Missing return statement in function");
   }
 
-  static final public SPStatement WriteStatement() throws ParseException {int line;
+  final public SPStatement WriteStatement() throws ParseException {int line;
   boolean writeLine = false;
   SPExpression expression;
   ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
@@ -1401,7 +1350,7 @@ expressionList.add(expression);
   }
 
 //TODO: Fazer leitura direta em posição de vetor/matriz
-  static final public SPStatement ReadStatement() throws ParseException {int line;
+  final public SPStatement ReadStatement() throws ParseException {int line;
 SPExpression expression;
 ArrayList<SPExpression> expressionList = new ArrayList<SPExpression>();
     jj_consume_token(LEIA);
@@ -1431,7 +1380,7 @@ expression = new SPVariable(token.beginLine, token.image);
     throw new Error("Missing return statement in function");
   }
 
-  static private boolean jj_2_1(int xla)
+  private boolean jj_2_1(int xla)
  {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
@@ -1439,7 +1388,7 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(0, xla); }
   }
 
-  static private boolean jj_2_2(int xla)
+  private boolean jj_2_2(int xla)
  {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_2(); }
@@ -1447,30 +1396,7 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(78)) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_24()
- {
-    if (jj_scan_token(MINUS)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23()
- {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1()
+  private boolean jj_3_1()
  {
     Token xsp;
     xsp = jj_scanpos;
@@ -1481,19 +1407,41 @@ expression = new SPVariable(token.beginLine, token.image);
     return false;
   }
 
-  static private boolean jj_initialized_once = false;
+  private boolean jj_3_2()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(77)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(78)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_24()
+ {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23()
+ {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
   /** Generated Token Manager. */
-  static public PortAlgParserTokenManager token_source;
-  static SimpleCharStream jj_input_stream;
+  public PortAlgParserTokenManager token_source;
+  SimpleCharStream jj_input_stream;
   /** Current token. */
-  static public Token token;
+  public Token token;
   /** Next token. */
-  static public Token jj_nt;
-  static private int jj_ntk;
-  static private Token jj_scanpos, jj_lastpos;
-  static private int jj_la;
-  static private int jj_gen;
-  static final private int[] jj_la1 = new int[39];
+  public Token jj_nt;
+  private int jj_ntk;
+  private Token jj_scanpos, jj_lastpos;
+  private int jj_la;
+  private int jj_gen;
+  final private int[] jj_la1 = new int[39];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1511,9 +1459,9 @@ expression = new SPVariable(token.beginLine, token.image);
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x1ff00004,0x0,0x1ff00004,0x10000000,0x0,0x0,0x0,0x0,0x1ff00004,0xff00004,0x200,0x400,0x60,0x60,0x198,0x198,0x6000,0xb8000,0xb8000,0x6000,0x10000000,0x0,0x0,0x0,0x0,0x1ff00004,0x0,0x1ff00004,0x1ff00004,0x0,0x1ff00004,0x1ff00004,0x0,0x1ff00004,0x0,0x0,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
-  static private boolean jj_rescan = false;
-  static private int jj_gc = 0;
+  final private JJCalls[] jj_2_rtns = new JJCalls[2];
+  private boolean jj_rescan = false;
+  private int jj_gc = 0;
 
   /** Constructor with InputStream. */
   public PortAlgParser(java.io.InputStream stream) {
@@ -1521,13 +1469,6 @@ expression = new SPVariable(token.beginLine, token.image);
   }
   /** Constructor with InputStream and supplied encoding */
   public PortAlgParser(java.io.InputStream stream, String encoding) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new PortAlgParserTokenManager(jj_input_stream);
     token = new Token();
@@ -1538,11 +1479,11 @@ expression = new SPVariable(token.beginLine, token.image);
   }
 
   /** Reinitialise. */
-  static public void ReInit(java.io.InputStream stream) {
+  public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
   /** Reinitialise. */
-  static public void ReInit(java.io.InputStream stream, String encoding) {
+  public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
@@ -1554,13 +1495,6 @@ expression = new SPVariable(token.beginLine, token.image);
 
   /** Constructor. */
   public PortAlgParser(java.io.Reader stream) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser. ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new PortAlgParserTokenManager(jj_input_stream);
     token = new Token();
@@ -1571,7 +1505,7 @@ expression = new SPVariable(token.beginLine, token.image);
   }
 
   /** Reinitialise. */
-  static public void ReInit(java.io.Reader stream) {
+  public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
     token = new Token();
@@ -1583,13 +1517,6 @@ expression = new SPVariable(token.beginLine, token.image);
 
   /** Constructor with generated Token Manager. */
   public PortAlgParser(PortAlgParserTokenManager tm) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser. ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     token_source = tm;
     token = new Token();
     jj_ntk = -1;
@@ -1608,7 +1535,7 @@ expression = new SPVariable(token.beginLine, token.image);
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static private Token jj_consume_token(int kind) throws ParseException {
+  private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -1634,8 +1561,8 @@ expression = new SPVariable(token.beginLine, token.image);
 
   @SuppressWarnings("serial")
   static private final class LookaheadSuccess extends java.lang.Error { }
-  static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  static private boolean jj_scan_token(int kind) {
+  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+  private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
       if (jj_scanpos.next == null) {
@@ -1658,7 +1585,7 @@ expression = new SPVariable(token.beginLine, token.image);
 
 
 /** Get the next Token. */
-  static final public Token getNextToken() {
+  final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
@@ -1667,7 +1594,7 @@ expression = new SPVariable(token.beginLine, token.image);
   }
 
 /** Get the specific Token. */
-  static final public Token getToken(int index) {
+  final public Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
@@ -1676,20 +1603,20 @@ expression = new SPVariable(token.beginLine, token.image);
     return t;
   }
 
-  static private int jj_ntk_f() {
+  private int jj_ntk_f() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  static private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
-  static private int[] jj_expentry;
-  static private int jj_kind = -1;
-  static private int[] jj_lasttokens = new int[100];
-  static private int jj_endpos;
+  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+  private int[] jj_expentry;
+  private int jj_kind = -1;
+  private int[] jj_lasttokens = new int[100];
+  private int jj_endpos;
 
-  static private void jj_add_error_token(int kind, int pos) {
+  private void jj_add_error_token(int kind, int pos) {
     if (pos >= 100) return;
     if (pos == jj_endpos + 1) {
       jj_lasttokens[jj_endpos++] = kind;
@@ -1715,7 +1642,7 @@ expression = new SPVariable(token.beginLine, token.image);
   }
 
   /** Generate ParseException. */
-  static public ParseException generateParseException() {
+  public ParseException generateParseException() {
     jj_expentries.clear();
     boolean[] la1tokens = new boolean[95];
     if (jj_kind >= 0) {
@@ -1755,14 +1682,14 @@ expression = new SPVariable(token.beginLine, token.image);
   }
 
   /** Enable tracing. */
-  static final public void enable_tracing() {
+  final public void enable_tracing() {
   }
 
   /** Disable tracing. */
-  static final public void disable_tracing() {
+  final public void disable_tracing() {
   }
 
-  static private void jj_rescan_token() {
+  private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 2; i++) {
     try {
@@ -1782,7 +1709,7 @@ expression = new SPVariable(token.beginLine, token.image);
     jj_rescan = false;
   }
 
-  static private void jj_save(int index, int xla) {
+  private void jj_save(int index, int xla) {
     JJCalls p = jj_2_rtns[index];
     while (p.gen > jj_gen) {
       if (p.next == null) { p = p.next = new JJCalls(); break; }

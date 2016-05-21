@@ -1,4 +1,5 @@
-//javacc_options
+options {	STATIC = false; }
+
 PARSER_BEGIN(PortAlgParser)
 
 package Parser;
@@ -11,82 +12,32 @@ import java.util.Arrays;
 
 public class PortAlgParser{
 	 public static void main(String args[]) {
-    PortAlgParser parser;
-	int version = 0;
-	int rebuild = 0;
-	int commit = 10;
-    if (args.length == 0) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from standard input . . .");
-      parser = new PortAlgParser(System.in);
-    } else if (args.length == 1) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Reading from file " + args[0] + " . . .");
-      try {
-        parser = new PortAlgParser(new java.io.FileInputStream(args[0]));
-      } catch (java.io.FileNotFoundException e) {
-        System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  File " + args[0] + " not found.");
-        return;
-      }
-    } else {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Usage is one of:");
-      System.out.println("         java PortAlgParser < inputfile");
-      System.out.println("OR");
-      System.out.println("         java PortAlgParser inputfile");
-      return;
-    }
-    try {
-       SPCompilationUnit ast = parser.Specification();
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Algol file parsed successfully.");
-      ast.preAnalyze();
-      ast.analyze(null);
-      String outputDir = "C:\\AlgolBytecodes";
-      CLEmitter clEmitter = new CLEmitter(true);
-      clEmitter.destinationDir(outputDir);
-      ast.codegen(clEmitter);
-    } catch (ParseException e) {
-      System.out.println("Portugues Estruturado Parser Version " + version + "." + rebuild + "." + commit + ":  Encountered errors during parse.");
-	  System.out.println(e.getMessage());
-    }
+    
   }
-  
-  private static SimpleCharStream charStream;
 
-    private static PortAlgParserTokenManager scanner;
-
-    private static PortAlgParser parser;
-
-    private static boolean errorHasOcurred;
+    private boolean errorHasOcurred;
     public boolean errorHasOccurred(){
         return errorHasOcurred;
     }
 
-    private static ArrayList<SemanticError> semanticErrors;
-    public static ArrayList<SemanticError> getSemanticErrors(){
+    private ArrayList<SemanticError> semanticErrors;
+    public ArrayList<SemanticError> getSemanticErrors(){
         return semanticErrors;
     }
   
   public void compile(byte[] codeBytes) throws ParseException {
     semanticErrors = new ArrayList<SemanticError>();
 
-        if (charStream == null)
-            charStream = new SimpleCharStream(new ByteArrayInputStream(codeBytes));
-        else
-            charStream.ReInit(new ByteArrayInputStream(codeBytes));
+            SimpleCharStream charStream = new SimpleCharStream(new ByteArrayInputStream(codeBytes));
 
-        if (scanner == null)
-            scanner = new PortAlgParserTokenManager(charStream);
-        else
-            scanner.ReInit(charStream);
+            PortAlgParserTokenManager scanner = new PortAlgParserTokenManager(charStream);
 
         errorHasOcurred = false;
 
+        ReInit(scanner);
         SPCompilationUnit ast;
-        if (parser == null)
-            parser = new PortAlgParser(scanner);
-        else
-            parser.ReInit(scanner);
-
         try {
-            ast = parser.Specification();
+            ast = Specification();
         } catch (ParseException exception) {
             System.out.println(exception.getMessage());
             throw exception;
@@ -95,9 +46,9 @@ public class PortAlgParser{
         errorHasOcurred |= ast.errorHasOccurred();
         semanticErrors.clear();
         if(ast.getContext() != null) {
-            semanticErrors.addAll(ast.getContext().semanticErrors);
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
         }
-
+       
         try {
             ast.preAnalyze();
         }
@@ -109,7 +60,7 @@ public class PortAlgParser{
         errorHasOcurred |= ast.errorHasOccurred();
         semanticErrors.clear();
         if(ast.getContext() != null) {
-            semanticErrors.addAll(ast.getContext().semanticErrors);
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
         }
 
         try {
@@ -123,7 +74,7 @@ public class PortAlgParser{
         errorHasOcurred |= ast.errorHasOccurred();
         semanticErrors.clear();
         if(ast.getContext() != null){
-            semanticErrors.addAll(ast.getContext().semanticErrors);
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
         }
 
         String outputDir = "C:\\AlgolBytecodes";
@@ -142,7 +93,7 @@ public class PortAlgParser{
         errorHasOcurred |= ast.errorHasOccurred();
         semanticErrors.clear();
         if(ast.getContext() != null) {
-            semanticErrors.addAll(ast.getContext().semanticErrors);
+            semanticErrors.addAll(((Context)ast.getContext()).semanticErrors);
         }
   }
 }
