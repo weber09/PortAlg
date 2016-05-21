@@ -1,11 +1,11 @@
-body {
+html, body, .main{
+    height: 99%;
+}
+
+.pageBody{
     background-color: #111111;
     font-family: Tahoma, Geneva, sans-serif;
     color: #b3b3b3;
-}
-
-html, body, .main{
-    height: 99%;
 }
 
 .main{
