@@ -1,8 +1,6 @@
 package AST;
 
-import static AST.CLConstants.I2D;
-import static AST.CLConstants.I2L;
-import static AST.CLConstants.L2D;
+import static AST.CLConstants.*;
 
 public class SPAssignOp extends SPAssignment {
 
