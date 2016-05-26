@@ -10,14 +10,9 @@
     <list default="true" id="01bba4bb-9371-43a0-a7ff-2395a58e048c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/.idea/misc.xml" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPForStatement.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPForStatement.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPGreaterThanOp.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPGreaterThanOp.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPNewArrayOp.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPNewArrayOp.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPGreaterEqualOp.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPGreaterEqualOp.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPLessEqualOp.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/AST/SPLessEqualOp.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/Parser/PortAlgParser.java" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/Parser/PortAlgParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.Compiler/src/Parser/PortAlgParser.jj" afterPath="$PROJECT_DIR$/../PortAlg.Compiler/src/Parser/PortAlgParser.jj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/css/main-style.css" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/css/main-style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/index.html" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/js/app.js" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/js/app.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="PortAlg.WebService.iws" />
@@ -78,8 +73,8 @@
       <file leaf-file-name="PortAlgService.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Service/PortAlgService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+            <state relative-caret-position="314">
+              <caret line="39" column="30" selection-start-line="39" selection-start-column="30" selection-end-line="39" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -246,36 +241,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Service" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PortAlg.WebService" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PortAlg.WebService" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Application" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -914,12 +879,12 @@
       <workItem from="1464137487743" duration="1132000" />
       <workItem from="1464140973002" duration="596000" />
       <workItem from="1464222084785" duration="7000" />
-      <workItem from="1464270473013" duration="2383000" />
+      <workItem from="1464270473013" duration="3627000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10684000" />
+    <option name="totallyTimeSpent" value="11928000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1164,8 +1129,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Service/PortAlgService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+        <state relative-caret-position="314">
+          <caret line="39" column="30" selection-start-line="39" selection-start-column="30" selection-end-line="39" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
