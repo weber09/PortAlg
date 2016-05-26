@@ -7,8 +7,11 @@ public class SPGreaterThanOp extends SPComparison {
     }
 
     @Override
-    public void codegen(CLEmitter output) {
-        lhs.codegen(output);
-        rhs.codegen(output);
+    public void codegen(CLEmitter output){
+
+    }
+
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        System.err.println("Error in code generation");
     }
 }
