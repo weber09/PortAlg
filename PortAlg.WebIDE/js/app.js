@@ -1,6 +1,6 @@
 angular.module('app', [])
 .controller('editor', function ($scope) {
-    $scope.content = '# Ace Directive ';
+    $scope.content = '';
 })
 .controller('compileController', ['$scope', '$http', function($scope, $http){
     $scope.messagerest = 'No REST!';

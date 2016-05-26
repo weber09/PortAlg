@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
         integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-        <!-- Optional theme 
+        <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-         integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">-->
+         integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
@@ -24,21 +24,27 @@
     </head>
     <body class="pageBody">
         <div class="main" data-ng-controller="editor">
-            
             <div class="header">
                 <h1>Portal de Algoritmos UCS</h1>
             </div>
             
             <div class="content" data-ng-controller="compileController">
-                <div id="editorToolbar" class="btn-toolbar" role="tooblar" arial-label="Compiler Toolbar" >
+                <div id="editorToolbar" arial-label="Compiler Toolbar" >
+                    <div class="row">
                     <div id="toolbar" class="btn-group row" role="group" arial-label="Compiler buttons toolbar">
                         <button type="button" class="btn btn-default" data-ng-click="callCompiler()">Executar</button>
                         <button type="button" class="btn btn-default">Passo-a-Passo</button>
                         <button type="button" class="btn btn-default" disabled="disabled">Continuar</button>
                         <button type="button" class="btn btn-default">Encerrar</button>
                     </div>
+                    </div>
+                    <div class="row">
                     <div id="secondRowToolbar row">
                         <input type="checkbox">Linha-a-Linha</input>
+                        <input type="checkbox">Leitura aleatória</input>
+                        <input type="checkbox">Dados de teste</input>
+                        <button type="button" class="btn btn-default" disabled="disabled">Validar solução</button>
+                    </div>
                     </div>
                 </div>
                 <div class="editorPanel"   >
