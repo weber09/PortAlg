@@ -31,16 +31,18 @@ public class SPIfStatement extends SPStatement {
     public void codegen(CLEmitter output) {
         String elseLabel = output.createLabel();
         String endLabel = output.createLabel();
+
+        if(elsePart == null)
+            elseLabel = endLabel;
+
         condition.codegen(output, elseLabel, false);
         thenPart.codegen(output);
+        output.addBranchInstruction(GOTO, endLabel);
         if (elsePart != null) {
-            output.addBranchInstruction(GOTO, endLabel);
-        }
-        output.addLabel(elseLabel);
-        if (elsePart != null) {
+            output.addLabel(elseLabel);
             elsePart.codegen(output);
-            output.addLabel(endLabel);
         }
+        output.addLabel(endLabel);
     }
 
 }

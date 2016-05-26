@@ -11,6 +11,6 @@ public class SPGreaterThanOp extends SPComparison {
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addBranchInstruction(onTrue ? IF_ICMPGT : IF_ICMPLT, targetLabel);
+        output.addBranchInstruction(onTrue ? IF_ICMPGT : IF_ICMPLE, targetLabel);
     }
 }

@@ -35,7 +35,13 @@ public class SPEqualOp extends SPBooleanBinaryExpression {
         return this;
     }
 
-    @Override
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addBranchInstruction(onTrue ? IF_ICMPEQ : IF_ICMPNE, targetLabel);
+    }
+
+    /*@Override
     public void codegen(CLEmitter output) {
 
         String elseLabel = output.createLabel();
@@ -75,5 +81,5 @@ public class SPEqualOp extends SPBooleanBinaryExpression {
         output.addLabel(elseLabel);
         output.addNoArgInstruction(ICONST_0); // false
         output.addLabel(endIfLabel);
-    }
+    }*/
 }
