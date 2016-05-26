@@ -11,6 +11,6 @@ public class SPGreaterEqualOp extends SPComparison {
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addBranchInstruction(onTrue ? IF_ICMPGE : IF_ICMPLE, targetLabel);
+        output.addBranchInstruction(onTrue ? IF_ICMPGE : IF_ICMPLT, targetLabel);
     }
 }

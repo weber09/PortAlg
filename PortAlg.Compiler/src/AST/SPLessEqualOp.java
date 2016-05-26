@@ -11,6 +11,6 @@ public class SPLessEqualOp extends SPComparison {
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addBranchInstruction(onTrue ? IF_ICMPLE : IF_ICMPGE, targetLabel);
+        output.addBranchInstruction(onTrue ? IF_ICMPLE : IF_ICMPGT, targetLabel);
     }
 }
