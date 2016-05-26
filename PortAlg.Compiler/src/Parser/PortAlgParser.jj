@@ -321,7 +321,7 @@ TOKEN :
     variables.add(new SPVariableDeclarator(0, "sp_inner_scanner", Type.typeFor(Class.forName("java.util.Scanner"))));
   } catch (ClassNotFoundException ex) {
   }
-   fields = new SPFieldDeclaration(line, mods, variables);
+   fields = new SPFieldDeclaration(line, new ArrayList<String>(Arrays.asList("public", "static")), variables);
    classBody.add(fields);
   }
 	"inicio" 
@@ -341,7 +341,7 @@ TOKEN :
 
         formalParameters.add(formalParameter);
 
-        memberDecl = new SPMethodDeclaration(line, mods, "main", Type.VOID, formalParameters, body);
+        memberDecl = new SPMethodDeclaration(line, new ArrayList<String>(Arrays.asList("public", "static")), "main", Type.VOID, formalParameters, body);
 
         classBody.add(memberDecl);
 
@@ -788,7 +788,12 @@ SPExpression PrimaryExpression() :
   SPExpression expr;
 }
 {(
-	 <IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
+	 (
+    <IDENTIFIER> {  expr = new SPVariable(token.beginLine, token.image); }
+    [
+    expr = Selector(expr)
+    ]
+   )
   |
    <LPAREN> { expr = Expression(); } <RPAREN>
   |
