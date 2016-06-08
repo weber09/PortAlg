@@ -10,11 +10,11 @@ import java.util.Arrays;
 
 public class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
-String code = "algoritmo var b : logico inicio b <- 8 > 9 fimalgoritmo";
-             PortAlgParser compiler = new PortAlgParser(new ByteArrayInputStream(code.getBytes()));
+            String code = "algoritmo var a,b : inteiro n : logico inicio leia(a,b) n <- a<>b escreva(n) fimalgoritmo";
              try {
-                 compiler.compile(code.getBytes());
-             }catch(ParseException ex){
+                 PortAlgParser parser = new PortAlgParser(new ByteArrayInputStream(code.getBytes()));
+                 parser.compile(code.getBytes());
+             }catch(Exception e){
 
              }
   }
@@ -776,22 +776,22 @@ rhs = MultiplicativeExpression();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case STAR:{
         jj_consume_token(STAR);
-lhs = new SPMultiplyOp(line, lhs, null);
+line = token.beginLine; lhs = new SPMultiplyOp(line, lhs, null);
         break;
         }
       case SLASH:{
         jj_consume_token(SLASH);
-lhs = new SPDivisionOp(line, lhs, null);
+line = token.beginLine; lhs = new SPDivisionOp(line, lhs, null);
         break;
         }
       case REM:{
         jj_consume_token(REM);
-lhs = new SPMultiplyOp(line, lhs, null);
+line = token.beginLine; lhs = new SPRestDivisionOp(line, lhs, null);
         break;
         }
       case CSLASH:{
         jj_consume_token(CSLASH);
-lhs = new SPMultiplyOp(line, lhs, null);
+line = token.beginLine; lhs = new SPDivisionOp(line, lhs, null);
         break;
         }
       default:

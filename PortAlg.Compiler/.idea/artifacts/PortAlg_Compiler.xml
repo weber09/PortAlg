@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PortAlg.Compiler">
+    <output-path>$PROJECT_DIR$/out/artifacts/PortAlg_Compiler</output-path>
+    <root id="archive" name="PortAlg.Compiler.jar">
+      <element id="module-output" name="PortAlg.Compiler" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
