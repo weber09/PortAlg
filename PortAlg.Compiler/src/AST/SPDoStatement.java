@@ -34,7 +34,12 @@ public class SPDoStatement extends SPStatement{
         // Codegen body
         body.codegen(output);
 
-        condition.codegen(output, out, true);
+        if(SPBooleanBinaryExpression.class.isInstance(condition)){
+            condition.codegen(output, out, !((SPBooleanBinaryExpression)condition).getJumOnTrue());
+        }
+        else {
+            condition.codegen(output, out, false);
+        }
         output.addBranchInstruction(GOTO, loop);
 
         output.addLabel(out);

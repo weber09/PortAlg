@@ -7,14 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78484aa0-ce05-4d2f-adb8-8fb4713f5d1b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/PortAlg.Compiler/Parser/PortAlgParser.jj" afterPath="$PROJECT_DIR$/out/production/PortAlg.Compiler/Parser/PortAlgParser.jj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPBooleanBinaryExpression.java" afterPath="$PROJECT_DIR$/src/AST/SPBooleanBinaryExpression.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPEqualOp.java" afterPath="$PROJECT_DIR$/src/AST/SPEqualOp.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPIfStatement.java" afterPath="$PROJECT_DIR$/src/AST/SPIfStatement.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPNotEqualOp.java" afterPath="$PROJECT_DIR$/src/AST/SPNotEqualOp.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPDoStatement.java" afterPath="$PROJECT_DIR$/src/AST/SPDoStatement.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AST/SPWhileStatement.java" afterPath="$PROJECT_DIR$/src/AST/SPWhileStatement.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Parser/PortAlgParser.java" afterPath="$PROJECT_DIR$/src/Parser/PortAlgParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Parser/PortAlgParser.jj" afterPath="$PROJECT_DIR$/src/Parser/PortAlgParser.jj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/css/main-style.css" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/css/main-style.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/index.html" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../PortAlg.WebIDE/js/app.js" afterPath="$PROJECT_DIR$/../PortAlg.WebIDE/js/app.js" />
@@ -41,34 +38,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SPEqualOp.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SPEqualOp.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AST/SPEqualOp.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+            <state relative-caret-position="153">
+              <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPAssignOp.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AST/SPAssignOp.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPStatementExpression.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AST/SPStatementExpression.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding>
-                <element signature="e#473#474#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -96,80 +71,96 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SPBooleanBinaryExpression.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AST/SPBooleanBinaryExpression.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="26" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="26" />
-              <folding>
-                <element signature="e#222#223#0" expanded="true" />
-                <element signature="e#255#256#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPDivisionOp.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AST/SPDivisionOp.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPRestDivisionOp.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AST/SPRestDivisionOp.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="26" column="27" selection-start-line="26" selection-start-column="27" selection-end-line="26" selection-end-column="27" />
-              <folding>
-                <element signature="e#229#230#0" expanded="false" />
-                <element signature="e#266#267#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PortAlgParser.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Parser/PortAlgParser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="12" column="136" selection-start-line="12" selection-start-column="136" selection-end-line="12" selection-end-column="136" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3309#3322#0" expanded="true" />
-                <element signature="e#3373#3383#0" expanded="true" />
-                <element signature="e#3427#3435#0" expanded="true" />
-                <element signature="e#3597#3610#0" expanded="true" />
-                <element signature="e#3702#3721#0" expanded="true" />
-                <element signature="e#3914#3921#0" expanded="true" />
-                <element signature="e#7705#7727#0" expanded="true" />
-                <element signature="e#7791#7813#0" expanded="true" />
-                <element signature="e#8515#8537#0" expanded="true" />
-                <element signature="e#8675#8689#0" expanded="true" />
-                <element signature="e#8746#8760#0" expanded="true" />
-                <element signature="e#11638#11660#0" expanded="true" />
-                <element signature="e#24084#24098#0" expanded="true" />
-                <element signature="e#28034#28047#0" expanded="true" />
-                <element signature="e#28131#28144#0" expanded="true" />
-                <element signature="e#30378#30391#0" expanded="true" />
-                <element signature="e#31569#31582#0" expanded="true" />
-                <element signature="e#32660#32673#0" expanded="true" />
-                <element signature="e#35895#35909#0" expanded="true" />
-                <element signature="e#37093#37107#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="SPIfStatement.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AST/SPIfStatement.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+            <state relative-caret-position="245">
+              <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SPForStatement.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AST/SPForStatement.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="381">
+              <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SPWriteStatement.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AST/SPWriteStatement.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SPWhileStatement.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AST/SPWhileStatement.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="313">
+              <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="41" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SPDoStatement.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AST/SPDoStatement.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PortAlgParser.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Parser/PortAlgParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="212">
+              <caret line="569" column="0" selection-start-line="569" selection-start-column="0" selection-end-line="569" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3318#3331#0" expanded="true" />
+                <element signature="e#3382#3392#0" expanded="true" />
+                <element signature="e#3436#3444#0" expanded="true" />
+                <element signature="e#3606#3619#0" expanded="true" />
+                <element signature="e#3711#3730#0" expanded="true" />
+                <element signature="e#3923#3930#0" expanded="true" />
+                <element signature="e#7714#7736#0" expanded="true" />
+                <element signature="e#7800#7822#0" expanded="true" />
+                <element signature="e#8524#8546#0" expanded="true" />
+                <element signature="e#8684#8698#0" expanded="true" />
+                <element signature="e#8755#8769#0" expanded="true" />
+                <element signature="e#11647#11669#0" expanded="true" />
+                <element signature="e#24093#24107#0" expanded="true" />
+                <element signature="e#28043#28056#0" expanded="true" />
+                <element signature="e#28140#28153#0" expanded="true" />
+                <element signature="e#30387#30400#0" expanded="true" />
+                <element signature="e#31578#31591#0" expanded="true" />
+                <element signature="e#32669#32682#0" expanded="true" />
+                <element signature="e#35904#35918#0" expanded="true" />
+                <element signature="e#37102#37116#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SPLogicalOrOp.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AST/SPLogicalOrOp.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <folding>
+                <element signature="e#186#187#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -225,8 +216,6 @@
         <option value="$PROJECT_DIR$/src/AST/SPLogicalAndOp.java" />
         <option value="$PROJECT_DIR$/src/AST/SPBinaryExpression.java" />
         <option value="$PROJECT_DIR$/src/AST/SPArrayExpression.java" />
-        <option value="$PROJECT_DIR$/src/AST/SPWhileStatement.java" />
-        <option value="$PROJECT_DIR$/src/AST/SPDoStatement.java" />
         <option value="$PROJECT_DIR$/src/AST/SPWriteStatement.java" />
         <option value="$PROJECT_DIR$/src/AST/SPReadStatement.java" />
         <option value="$PROJECT_DIR$/src/AST/Context.java" />
@@ -244,6 +233,8 @@
         <option value="$PROJECT_DIR$/src/AST/SPEqualOp.java" />
         <option value="$PROJECT_DIR$/src/AST/SPBooleanBinaryExpression.java" />
         <option value="$PROJECT_DIR$/src/AST/SPIfStatement.java" />
+        <option value="$PROJECT_DIR$/src/AST/SPWhileStatement.java" />
+        <option value="$PROJECT_DIR$/src/AST/SPDoStatement.java" />
         <option value="$PROJECT_DIR$/src/Parser/PortAlgParser.java" />
       </list>
     </option>
@@ -253,6 +244,13 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Bundled (Maven 3)" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
@@ -849,12 +847,12 @@
       <workItem from="1465173399488" duration="738000" />
       <workItem from="1465266538265" duration="558000" />
       <workItem from="1465343914224" duration="2944000" />
-      <workItem from="1465428256463" duration="2465000" />
+      <workItem from="1465428256463" duration="3931000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47115000" />
+    <option name="totallyTimeSpent" value="48581000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -872,7 +870,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24946696" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21748401" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -964,17 +962,11 @@
           <properties />
           <option name="timeStamp" value="35" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/AST/SPIfStatement.java</url>
-          <line>37</line>
-          <properties />
-          <option name="timeStamp" value="36" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="37" />
+      <option name="time" value="39" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -1029,13 +1021,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPLogicalOrOp.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AST/SPLogicalAndOp.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -1082,14 +1067,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2363">
           <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPForStatement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1185,13 +1162,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPDoStatement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AST/CLEmitter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -1224,20 +1194,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="10" column="65" selection-start-line="10" selection-start-column="65" selection-end-line="10" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPWhileStatement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPWriteStatement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1351,49 +1307,91 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Parser/PortAlgParser.java">
+    <entry file="file://$PROJECT_DIR$/src/AST/SPEqualOp.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="12" column="136" selection-start-line="12" selection-start-column="136" selection-end-line="12" selection-end-column="136" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3309#3322#0" expanded="true" />
-            <element signature="e#3373#3383#0" expanded="true" />
-            <element signature="e#3427#3435#0" expanded="true" />
-            <element signature="e#3597#3610#0" expanded="true" />
-            <element signature="e#3702#3721#0" expanded="true" />
-            <element signature="e#3914#3921#0" expanded="true" />
-            <element signature="e#7705#7727#0" expanded="true" />
-            <element signature="e#7791#7813#0" expanded="true" />
-            <element signature="e#8515#8537#0" expanded="true" />
-            <element signature="e#8675#8689#0" expanded="true" />
-            <element signature="e#8746#8760#0" expanded="true" />
-            <element signature="e#11638#11660#0" expanded="true" />
-            <element signature="e#24084#24098#0" expanded="true" />
-            <element signature="e#28034#28047#0" expanded="true" />
-            <element signature="e#28131#28144#0" expanded="true" />
-            <element signature="e#30378#30391#0" expanded="true" />
-            <element signature="e#31569#31582#0" expanded="true" />
-            <element signature="e#32660#32673#0" expanded="true" />
-            <element signature="e#35895#35909#0" expanded="true" />
-            <element signature="e#37093#37107#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="153">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AST/SPIfStatement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+        <state relative-caret-position="245">
+          <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AST/SPEqualOp.java">
+    <entry file="file://$PROJECT_DIR$/src/AST/SPForStatement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+        <state relative-caret-position="381">
+          <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AST/SPWriteStatement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AST/SPWhileStatement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="41" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AST/SPDoStatement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AST/SPLogicalOrOp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding>
+            <element signature="e#186#187#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Parser/PortAlgParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="569" column="0" selection-start-line="569" selection-start-column="0" selection-end-line="569" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3318#3331#0" expanded="true" />
+            <element signature="e#3382#3392#0" expanded="true" />
+            <element signature="e#3436#3444#0" expanded="true" />
+            <element signature="e#3606#3619#0" expanded="true" />
+            <element signature="e#3711#3730#0" expanded="true" />
+            <element signature="e#3923#3930#0" expanded="true" />
+            <element signature="e#7714#7736#0" expanded="true" />
+            <element signature="e#7800#7822#0" expanded="true" />
+            <element signature="e#8524#8546#0" expanded="true" />
+            <element signature="e#8684#8698#0" expanded="true" />
+            <element signature="e#8755#8769#0" expanded="true" />
+            <element signature="e#11647#11669#0" expanded="true" />
+            <element signature="e#24093#24107#0" expanded="true" />
+            <element signature="e#28043#28056#0" expanded="true" />
+            <element signature="e#28140#28153#0" expanded="true" />
+            <element signature="e#30387#30400#0" expanded="true" />
+            <element signature="e#31578#31591#0" expanded="true" />
+            <element signature="e#32669#32682#0" expanded="true" />
+            <element signature="e#35904#35918#0" expanded="true" />
+            <element signature="e#37102#37116#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

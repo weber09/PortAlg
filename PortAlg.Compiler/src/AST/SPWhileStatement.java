@@ -33,7 +33,13 @@ public class SPWhileStatement extends SPStatement{
         // Branch out of the loop on the test condition
         // being false
         output.addLabel(test);
-        condition.codegen(output, out, false);
+
+        if(SPBooleanBinaryExpression.class.isInstance(condition)){
+            condition.codegen(output, out, ((SPBooleanBinaryExpression)condition).getJumOnTrue());
+        }
+        else {
+            condition.codegen(output, out, false);
+        }
 
         // Codegen body
         body.codegen(output);

@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
-             String code = "algoritmo var a,b : inteiro c : logico inicio se a <> b entao escreva(\"oi\") senao escreva(\"tchau\") fimse fimalgoritmo";
+             String code = "algoritmo var a,b : inteiro c : logico inicio se a <> b ou a = b entao escreva(\"oi\") senao escreva(\"tchau\") fimse fimalgoritmo";
 
              try{
                  PortAlgParser parser = new PortAlgParser(new ByteArrayInputStream(code.getBytes()));
