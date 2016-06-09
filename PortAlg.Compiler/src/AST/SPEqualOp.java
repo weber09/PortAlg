@@ -4,8 +4,9 @@ import static AST.CLConstants.*;
 
 public class SPEqualOp extends SPBooleanBinaryExpression {
 
-    public SPEqualOp(int line, SPExpression lhs, SPExpression rhs) {
+    public SPEqualOp(int line, SPExpression lhs, SPExpression rhs, boolean jumpOnTrue) {
         super(line, lhs, rhs);
+        this.jumpOnTrue = jumpOnTrue;
     }
 
     public SPExpression analyze(Context context) {
@@ -36,9 +37,34 @@ public class SPEqualOp extends SPBooleanBinaryExpression {
     }
 
     public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        Type lhsBaseType = lhs.type();
+        if(lhsBaseType.isArray()){
+            lhsBaseType = lhsBaseType.getBaseType();
+        }
+
+        Type rhsBaseType = rhs.type();
+        if(rhsBaseType.isArray()){
+            rhsBaseType = rhsBaseType.getBaseType();
+        }
+
         lhs.codegen(output);
+
+        if(lhsBaseType == Type.INT && rhsBaseType == Type.DECIMAL){
+            output.addNoArgInstruction(I2D);
+        }
+
         rhs.codegen(output);
-        output.addBranchInstruction(onTrue ? IF_ICMPEQ : IF_ICMPNE, targetLabel);
+
+        if(rhsBaseType == Type.INT && lhsBaseType == Type.DECIMAL){
+            output.addNoArgInstruction(I2D);
+        }
+
+        if(lhsBaseType == Type.DECIMAL || rhsBaseType == Type.DECIMAL){
+            output.addNoArgInstruction(DCMPL);
+            output.addBranchInstruction(onTrue ? IFEQ : IFNE, targetLabel);
+        }else {
+            output.addBranchInstruction(onTrue ? IF_ICMPEQ : IF_ICMPNE, targetLabel);
+        }
     }
 
     /*@Override

@@ -35,7 +35,12 @@ public class SPIfStatement extends SPStatement {
         if(elsePart == null)
             elseLabel = endLabel;
 
-        condition.codegen(output, elseLabel, false);
+        if(SPBooleanBinaryExpression.class.isInstance(condition)){
+            condition.codegen(output, elseLabel, ((SPBooleanBinaryExpression)condition).getJumOnTrue());
+        }else {
+            condition.codegen(output, elseLabel, false);
+        }
+
         thenPart.codegen(output);
         output.addBranchInstruction(GOTO, endLabel);
         if (elsePart != null) {

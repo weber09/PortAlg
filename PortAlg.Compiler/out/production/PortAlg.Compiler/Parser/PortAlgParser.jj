@@ -649,11 +649,7 @@ SPExpression EqualityExpression() :
     ) 
     { 
       rhs = RelationalExpression();
-      if(equal){
-        lhs = new SPEqualOp(line, lhs, rhs);
-      } else{
-        lhs = new SPNotEqualOp(line, lhs, rhs);
-      }
+      lhs = new SPEqualOp(line, lhs, rhs, !equal);
     }     
   )*
   

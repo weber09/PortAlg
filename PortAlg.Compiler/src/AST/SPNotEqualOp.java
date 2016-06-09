@@ -36,11 +36,7 @@ public class SPNotEqualOp extends SPBooleanBinaryExpression {
     }
 
     @Override
-    public void codegen(CLEmitter output) {
-
-        String elseLabel = output.createLabel();
-        String endIfLabel = output.createLabel();
-
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
         Type lhsBaseType = lhs.type();
         if(lhsBaseType.isArray()){
             lhsBaseType = lhsBaseType.getBaseType();
@@ -63,17 +59,5 @@ public class SPNotEqualOp extends SPBooleanBinaryExpression {
             output.addNoArgInstruction(I2D);
         }
 
-        if(lhsBaseType == Type.DECIMAL || rhsBaseType == Type.DECIMAL){
-            output.addNoArgInstruction(DCMPL);
-            output.addBranchInstruction(IFEQ, elseLabel);
-        }else{
-            output.addBranchInstruction(IF_ICMPEQ, elseLabel);
-        }
-
-        output.addNoArgInstruction(ICONST_0); // true
-        output.addBranchInstruction(GOTO, endIfLabel);
-        output.addLabel(elseLabel);
-        output.addNoArgInstruction(ICONST_1); // false
-        output.addLabel(endIfLabel);
     }
 }

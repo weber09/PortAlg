@@ -10,13 +10,12 @@ import java.util.Arrays;
 
 public class PortAlgParser implements PortAlgParserConstants {
          public static void main(String args[]) {
-            String code = "algoritmo var a,b : inteiro n : logico inicio leia(a,b) n <- a<>b escreva(n) fimalgoritmo";
-             try {
+             String code = "algoritmo var a,b : inteiro c : logico inicio se a <> b entao escreva(\"oi\") senao escreva(\"tchau\") fimse fimalgoritmo";
+
+             try{
                  PortAlgParser parser = new PortAlgParser(new ByteArrayInputStream(code.getBytes()));
                  parser.compile(code.getBytes());
-             }catch(Exception e){
-
-             }
+             }catch(Exception ex){}
   }
 
     private boolean errorHasOcurred;
@@ -645,11 +644,7 @@ equal = false;
         throw new ParseException();
       }
 rhs = RelationalExpression();
-      if(equal){
-        lhs = new SPEqualOp(line, lhs, rhs);
-      } else{
-        lhs = new SPNotEqualOp(line, lhs, rhs);
-      }
+      lhs = new SPEqualOp(line, lhs, rhs, !equal);
     }
 {if ("" != null) return lhs;}
     throw new Error("Missing return statement in function");
@@ -1411,17 +1406,6 @@ expression = new SPVariable(token.beginLine, token.image);
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_3_1()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) {
-    jj_scanpos = xsp;
-    if (jj_3R_24()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3_2()
  {
     Token xsp;
@@ -1442,6 +1426,17 @@ expression = new SPVariable(token.beginLine, token.image);
   private boolean jj_3R_23()
  {
     if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) {
+    jj_scanpos = xsp;
+    if (jj_3R_24()) return true;
+    }
     return false;
   }
 
