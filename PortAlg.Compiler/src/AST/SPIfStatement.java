@@ -1,6 +1,6 @@
 package AST;
 
-import static AST.CLConstants.*;
+import static AST.CLConstants.GOTO;
 
 public class SPIfStatement extends SPStatement {
 
@@ -31,23 +31,16 @@ public class SPIfStatement extends SPStatement {
     public void codegen(CLEmitter output) {
         String elseLabel = output.createLabel();
         String endLabel = output.createLabel();
-
-        if(elsePart == null)
-            elseLabel = endLabel;
-
-        if(SPBooleanBinaryExpression.class.isInstance(condition)){
-            condition.codegen(output, elseLabel, ((SPBooleanBinaryExpression)condition).getJumOnTrue());
-        }else {
-            condition.codegen(output, elseLabel, false);
-        }
-
+        condition.codegen(output, elseLabel, false);
         thenPart.codegen(output);
-        output.addBranchInstruction(GOTO, endLabel);
-        if (elsePart != null) {
-            output.addLabel(elseLabel);
-            elsePart.codegen(output);
+        if(elsePart!= null){
+            output.addBranchInstruction(GOTO, endLabel);
         }
-        output.addLabel(endLabel);
+        output.addLabel(elseLabel);
+        if (elsePart != null) {
+            elsePart.codegen(output);
+            output.addLabel(endLabel);
+        }
     }
 
 }

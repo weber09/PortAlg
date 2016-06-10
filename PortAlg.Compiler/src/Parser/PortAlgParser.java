@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PortAlgParser implements PortAlgParserConstants {
-         public static void main(String args[]) {
-             String code = "algoritmo var a,b : inteiro c : logico inicio se a <> b ou a = b entao escreva(\"oi\") senao escreva(\"tchau\") fimse fimalgoritmo";
+         public static void main(String args[]) {//(m = 4 ou m = 5 ou m = 3)
+             String code = "algoritmo var a,m : inteiro inicio leia(a,m) se a = 2 e (m = 4 ou m = 3 ou m= 5) entao escreva(\" acertou \" ) senao escreva(\" errou \") fimse fimalgoritmo";
 
              try{
                  PortAlgParser parser = new PortAlgParser(new ByteArrayInputStream(code.getBytes()));
