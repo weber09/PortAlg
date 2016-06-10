@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+        <title>PortALG</title>
+        <script type="text/javascript" src="bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+        <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+        <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="css/codeeditor.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                   <a class="navbar-brand" href="#">Portal de Algoritmos</a>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default" ng-controller="compileController">
+                        <div class="panel-heading avbar navbar-default">
+                            <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                    <ul class="nav navbar-nav">
+                                        <li><button type="button" class="btn btn-default" data-ng-click="callCompiler()">Executar</button></li>
+                                        <li><button type="button" class="btn btn-default">Passo-a-Passo</button></li>
+                                        <li><button type="button" class="btn btn-default" disabled="disabled">Continuar</button></li>
+                                        <li><button type="button" class="btn btn-default">Encerrar</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="panel-body editor" id="aceEditor" ui-ace="{useWrapMode : true,
+                                                            showGutter: true,
+                                                            theme:'eclipse',
+                                                            mode: 'csharp'
+                                                            }"></div>
+                        </div>
+                    </div>
+                <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><label>Console log:</label></div>
+                            <div class="panel-body">
+                                <div class="consoleEditor" id="consoleAceEditor" ui-ace="{useWrapMode : false,
+                                                            showGutter: false,
+                                                            readonly: true,
+                                                            theme:'github',
+                                                            mode: 'text'
+                                                            }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </body>
+</html>
